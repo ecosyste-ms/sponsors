@@ -17,7 +17,7 @@
     <% end %>
 
     <ul class='list-unstyled'>
-      <% ['name', 'location', 'kind', 'followers', 'following', 'total_stars', 'repositories_count', 'created_at', 'updated_at'].each do |key| %>
+      <% ['name', 'location', 'company', 'kind', 'followers', 'following', 'total_stars', 'repositories_count', 'created_at', 'updated_at'].each do |key| %>
         <% value = @account.data[key] %>
         <% next if value.blank? %>
         <li>
