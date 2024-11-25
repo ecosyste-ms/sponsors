@@ -158,6 +158,7 @@ class Account < ApplicationRecord
       # TODO sync funder
       s = Sponsorship.find_or_create_by(funder: funder, maintainer: self)
       s.update(status: 'active')
+      funder.save
     end
 
     past_sponsors = fetch_all_sponsors(filter: 'inactive')
@@ -166,6 +167,7 @@ class Account < ApplicationRecord
       # TODO sync funder
       s = Sponsorship.find_or_create_by(funder: funder, maintainer: self)
       s.update(status: 'inactive')
+      funder.save
     end
   end
 end
