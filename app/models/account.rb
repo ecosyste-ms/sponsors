@@ -82,7 +82,7 @@ class Account < ApplicationRecord
     c4 = doc.at('h4:contains("Current sponsors")')
     current_sponsors = c4&.at('span.Counter')&.text&.delete(',') || 0
     
-    p4 = doc.at('h4:contains("Past sponsors")')
+    p4 = doc.at('h4:contains("Past sponsors")') || doc.at('h5:contains("Past sponsors")')
     past_sponsors = p4&.at('span.Counter')&.text&.delete(',') || 0
 
     update sponsor_profile: {
