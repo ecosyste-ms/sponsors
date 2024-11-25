@@ -122,4 +122,25 @@ class Account < ApplicationRecord
     current_sponsors + past_sponsors
   end
 
+  def fetch_all_sponsors(filter: nil)
+    page = 1
+    sponsors = []
+    while true
+      url = "https://github.com/sponsors/#{login}/sponsors_partial?page=#{page}" + (filter ? "&filter=#{filter}" : "")
+      resp = Faraday.get(url)
+      break unless resp.status == 200
+        
+      doc = Nokogiri::HTML(resp.body)
+      break if doc.at_css('.blankslate')
+
+      logins = doc.css('.avatar').map { |avatar| avatar['alt'].gsub('@', '').downcase }
+      break if logins.empty?
+      sponsors += logins
+
+      page += 1
+      sleep 1
+    end
+
+    return sponsors
+  end
 end
