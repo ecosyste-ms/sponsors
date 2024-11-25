@@ -1,0 +1,17 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  login: MyString
+  last_synced_at: 2024-11-25 13:46:56
+  data:  { "key": "value" }
+  has_sponsors_listing: false
+  sponsors_count: 1
+  funded_count: 1
+
+two:
+  login: MyString2
+  last_synced_at: 2024-11-25 13:46:56
+  data: { "key": "value" }
+  has_sponsors_listing: true
+  sponsors_count: 1
+  funded_count: 1
