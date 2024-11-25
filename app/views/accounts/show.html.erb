@@ -65,5 +65,54 @@
         <% end %>
       </div>
     <% end %>  
+
+    <% if @account.sponsorships_as_maintainer.any? %>
+      <h2>Sponsors</h2>
+
+      <h5>Active Sponsors</h5>
+
+      <ul>
+        <% @account.sponsorships_as_maintainer.active.includes(:funder).each do |sponsorship| %>
+          <li>
+            <%= link_to sponsorship.funder.login, account_path(sponsorship.funder.login) %>
+          </li>
+        <% end %>
+      </ul>
+
+      <h5>Past Sponsors</h5>
+
+      <ul>
+        <% @account.sponsorships_as_maintainer.inactive.includes(:funder).each do |sponsorship| %>
+          <li>
+            <%= link_to sponsorship.funder.login, account_path(sponsorship.funder.login) %>
+          </li>
+        <% end %>
+      </ul>
+    <% end %>
   <% end %>
+
+  <% if @account.sponsorships_as_funder.any? %>
+    <h2>Sponsorships</h2>
+
+    <h5>Active Sponsorships</h5>
+
+    <ul>
+      <% @account.sponsorships_as_funder.active.includes(:maintainer).each do |sponsorship| %>
+        <li>
+          <%= link_to sponsorship.maintainer.login, account_path(sponsorship.maintainer.login) %>
+        </li>
+      <% end %>
+    </ul>
+
+    <h5>Past Sponsorships</h5>
+
+    <ul>
+      <% @account.sponsorships_as_funder.inactive.includes(:maintainer).each do |sponsorship| %>
+        <li>
+          <%= link_to sponsorship.maintainer.login, account_path(sponsorship.maintainer.login) %>
+        </li>
+      <% end %>
+    </ul>
+  <% end %>
+
 </div>

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2024_11_25_141413) do
+ActiveRecord::Schema[8.0].define(version: 2024_11_25_184831) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -25,4 +25,17 @@ ActiveRecord::Schema[8.0].define(version: 2024_11_25_141413) do
     t.datetime "updated_at", null: false
     t.jsonb "sponsor_profile", default: {}
   end
+
+  create_table "sponsorships", force: :cascade do |t|
+    t.bigint "funder_id", null: false
+    t.bigint "maintainer_id", null: false
+    t.string "status"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["funder_id"], name: "index_sponsorships_on_funder_id"
+    t.index ["maintainer_id"], name: "index_sponsorships_on_maintainer_id"
+  end
+
+  add_foreign_key "sponsorships", "accounts", column: "funder_id"
+  add_foreign_key "sponsorships", "accounts", column: "maintainer_id"
 end

@@ -1,6 +1,12 @@
 class Account < ApplicationRecord
   validates :login, presence: true
 
+  has_many :sponsorships_as_funder, class_name: "Sponsorship", foreign_key: :funder_id
+  has_many :sponsorships_as_maintainer, class_name: "Sponsorship", foreign_key: :maintainer_id
+
+  has_many :maintained_accounts, through: :sponsorships_as_funder, source: :maintainer
+  has_many :funder_accounts, through: :sponsorships_as_maintainer, source: :funder
+
   scope :has_sponsors_listing, -> { where(has_sponsors_listing: true) }
   scope :has_sponsors_profile, -> { where('length(sponsor_profile::text) > 2') }
 
@@ -142,5 +148,23 @@ class Account < ApplicationRecord
     end
 
     return sponsors
+  end
+
+  def sync_sponsorships
+    sponsors = fetch_all_sponsors(filter: 'active')
+    sponsors.each do |login|
+      funder = Account.find_or_create_by(login: login)
+      # TODO sync funder
+      s = Sponsorship.find_or_create_by(funder: funder, maintainer: self)
+      s.update(status: 'active')
+    end
+
+    past_sponsors = fetch_all_sponsors(filter: 'inactive')
+    past_sponsors.each do |login|
+      funder = Account.find_or_create_by(login: login)
+      # TODO sync funder
+      s = Sponsorship.find_or_create_by(funder: funder, maintainer: self)
+      s.update(status: 'inactive')
+    end
   end
 end
