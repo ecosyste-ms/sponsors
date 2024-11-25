@@ -10,6 +10,9 @@ class Account < ApplicationRecord
   scope :has_sponsors_listing, -> { where(has_sponsors_listing: true) }
   scope :has_sponsors_profile, -> { where('length(sponsor_profile::text) > 2') }
 
+  scope :with_sponsors, -> { where('sponsors_count > 0') }
+  scope :with_sponsorships, -> { where('sponsorships_count > 0') }
+
   before_save :set_sponsors_count
 
   def set_sponsors_count

@@ -1,4 +1,23 @@
 <div class="container-sm">
+  <ul class="nav nav-tabs my-3">
+    <li class="nav-item">
+      <a class="nav-link active" href="<%= root_path %>">
+        Maintainers
+        <span class="badge bg-secondary rounded-pill">
+          <%= number_with_delimiter Account.with_sponsors.count %>
+        </span>
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link " href="<%= sponsors_path %>">
+        Sponsors
+        <span class="badge bg-secondary rounded-pill">
+          <%= number_with_delimiter Account.with_sponsorships.count %>
+        </span>
+      </a>
+    </li>
+  </ul>
+
   <%= render @accounts %>
   <%== pagy_bootstrap_nav(@pagy) if @pagy.pages && @pagy.pages > 1 %>  
 </div>
