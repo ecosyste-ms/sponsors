@@ -1,0 +1,69 @@
+<div class="container-sm">
+  <h1>
+    <%= link_to @account.login, @account.html_url, target: :_blank %>
+  </h1>
+
+  <% if @account.data.present? %>
+    <% if @account.description.present? %>
+      <p>
+        <%= @account.description %>
+      </p>
+    <% end %>
+
+    <% if @account.funding_links.any? %>
+      <p><small class='text-muted'>
+      Funding Links: <% @account.funding_links.each_with_index do |url,i| %><%= ', ' if i > 0 %><%= link_to(url, sanitize_user_url(url), target: :_blank) %><% end %>
+      </small></p>
+    <% end %>
+
+    <ul class='list-unstyled'>
+      <% ['name', 'location', 'kind', 'followers', 'following', 'total_stars', 'repositories_count', 'created_at', 'updated_at'].each do |key| %>
+        <% value = @account.data[key] %>
+        <% next if value.blank? %>
+        <li>
+          <strong><%= key.humanize %>:</strong> <%= value %>
+        </li>
+      <% end %>
+    </ul>
+  <% end %>
+
+  <% if @account.has_sponsors_listing && @account.sponsor_profile.present? %>
+    <h2>GitHub Sponsors Profile</h2>
+
+    <p>
+      <%= simple_format @account.sponsor_profile['bio'] %>
+    </p>
+
+    <ul class='list-unstyled'>
+      <li>
+        <strong>Current Sponsors:</strong> <%= number_with_delimiter @account.current_sponsors %>
+      </li>
+      <li>
+        <strong>Past Sponsors:</strong> <%= number_with_delimiter @account.past_sponsors %>
+      </li>
+      <li>
+        <strong>Total Sponsors:</strong> <%= number_with_delimiter @account.total_sponsors %>
+      </li>
+    </ul>
+
+    <% if @account.sponsor_profile['featured_works'].present? %>
+      <h2>Featured Works</h2>
+      <div class='row'>
+        <% @account.sponsor_profile['featured_works'].each do |work| %>
+          <div class='col-md-4'>
+            <div class='card mb-3'>
+              <div class='card-body'>
+                <h5><%= link_to work['title'], work['url'], target: :_blank %></h5>
+                <p><%= work['description'] %></p>
+                <small class='text-muted'>
+                Language: <%= work['language'] %> - 
+                Stars: <%= work['stars'] %>
+                </small>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% end %>  
+  <% end %>
+</div>

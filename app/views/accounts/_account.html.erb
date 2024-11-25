@@ -1,0 +1,20 @@
+<div class="card mb-3 account d-flex" id="account_<%= account.id %>">
+  <div class="card-body pb-1">
+    <div class="d-flex">
+      
+      <div class="flex-grow-1 ms-3 text-break">
+        <h5 class='card-title'>
+          <%= link_to account.login, account_path(account.login) %>
+          <i><small class="text-muted"><%= account.kind %></small></i>
+        </h5>
+      
+        <p class="card-subtitle mb-2 text-muted">
+          <%= number_with_delimiter(account.repositories_count) %> repositories
+        </p>
+      </div>
+      <div class="flex-shrink-0">
+        <img src="<%= account.avatar_url %>" class="rounded" height='40' width='40' onerror="this.style.display='none'">
+      </div>  
+    </div>
+  </div>
+</div>

@@ -283,6 +283,7 @@ GEM
       actionpack (>= 5.2, < 8.1)
       railties (>= 5.2, < 8.1)
     ruby2_keywords (0.0.5)
+    sanitize-url (0.1.4)
     sassc (2.4.0)
       ffi (~> 1.9)
     sassc-rails (2.1.2)
@@ -373,6 +374,7 @@ DEPENDENCIES
   rails-controller-testing
   rswag-api
   rswag-ui
+  sanitize-url
   sassc-rails
   shoulda-context
   shoulda-matchers

@@ -2,6 +2,13 @@ class Account < ApplicationRecord
   validates :login, presence: true
 
   scope :has_sponsors_listing, -> { where(has_sponsors_listing: true) }
+  scope :has_sponsors_profile, -> { where('length(sponsor_profile::text) > 2') }
+
+  before_save :set_sponsors_count
+
+  def set_sponsors_count
+    self.sponsors_count = total_sponsors
+  end
 
   def self.import_from_repos
     url = 'https://repos.ecosyste.ms/api/v1/hosts/GitHub/owners/sponsors_logins'
@@ -86,4 +93,33 @@ class Account < ApplicationRecord
       past_sponsors: past_sponsors
     }
   end
+
+  def kind
+    data['kind']
+  end
+
+  def repositories_count
+    data['repositories_count']
+  end
+
+  def description
+    data['description']
+  end
+
+  def funding_links
+    data['funding_links']
+  end
+
+  def current_sponsors
+    sponsor_profile['current_sponsors'].to_i || 0
+  end
+
+  def past_sponsors
+    sponsor_profile['past_sponsors'].to_i || 0
+  end
+
+  def total_sponsors
+    current_sponsors + past_sponsors
+  end
+
 end

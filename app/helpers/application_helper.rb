@@ -1,2 +1,18 @@
 module ApplicationHelper
+  include Pagy::Frontend
+  include SanitizeUrl
+  
+  def meta_title
+    [@meta_title, 'Ecosyste.ms: Sponsors'].compact.join(' | ')
+  end
+
+  def meta_description
+    @meta_description || 'An open API service aggregating public data about GitHub Sponsors.'
+  end
+
+  def sanitize_user_url(url)
+    return unless url && url.is_a?(String)
+    return unless url =~ /\A#{URI::regexp}\z/
+    sanitize_url(url, :schemes => ['http', 'https'])
+  end
 end
