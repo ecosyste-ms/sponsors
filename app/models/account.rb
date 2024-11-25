@@ -14,6 +14,7 @@ class Account < ApplicationRecord
 
   def set_sponsors_count
     self.sponsors_count = total_sponsors
+    self.sponsorships_count = sponsorships_as_funder.count
   end
 
   def self.import_from_repos

@@ -7,4 +7,9 @@ class AccountsController < ApplicationController
   def show
     @account = Account.find_by_login(params[:id])
   end
+
+  def sponsors
+    scope = Account.all.where('sponsorships_count > 0').order('sponsorships_count desc, updated_at DESC')
+    @pagy, @accounts = pagy(scope)
+  end
 end

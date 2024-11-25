@@ -14,5 +14,7 @@ Rails.application.routes.draw do
 
   resources :accounts, only: [:index, :show]
 
+  get 'sponsors', to: 'accounts#sponsors', as: :sponsors
+
   root to: "accounts#index"
 end

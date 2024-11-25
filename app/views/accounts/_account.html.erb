@@ -9,7 +9,11 @@
         </h5>
       
         <p class="card-subtitle mb-2 text-muted">
-          <%= number_with_delimiter(account.sponsors_count) %> sponsors<br>
+          <% if action_name == 'sponsors'%>
+            <%= number_with_delimiter(account.sponsorships_count) %> sponsoring<br>
+          <% else%>
+            <%= number_with_delimiter(account.sponsors_count) %> sponsors<br>
+          <% end%>
           <%= number_with_delimiter(account.repositories_count) %> repositories
         </p>
       </div>
