@@ -7,7 +7,7 @@
       <a class="nav-link" href="<%= root_path %>">
         Maintainers
         <span class="badge bg-secondary rounded-pill">
-          <%= number_with_delimiter Account.with_sponsors.count %>
+          <%= number_with_delimiter Account.has_sponsors_profile.count %>
         </span>
       </a>
     </li>
