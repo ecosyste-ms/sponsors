@@ -51,6 +51,16 @@ class Account < ApplicationRecord
     "https://avatars.githubusercontent.com/#{login}"
   end
 
+  def sync_all
+    sync
+
+    scrape_sponsored_page
+
+    sync_sponsorships
+
+    update last_synced_at: Time.now
+  end
+
   def sync
     resp = Faraday.get(repos_api_url)
 
@@ -59,7 +69,6 @@ class Account < ApplicationRecord
     data = JSON.parse(resp.body)
 
     update(
-      last_synced_at: Time.now,
       data: data
     )
   end
@@ -69,6 +78,7 @@ class Account < ApplicationRecord
   end
 
   def scrape_sponsored_page
+    return unless has_sponsors_listing?
     resp = Faraday.get(sponsors_url)
 
     return unless resp.status == 200
@@ -101,7 +111,7 @@ class Account < ApplicationRecord
       sponsors: sponsors,
       current_sponsors: current_sponsors,
       past_sponsors: past_sponsors
-    }
+    }, last_synced_at: Time.now
   end
 
   def kind
@@ -155,6 +165,7 @@ class Account < ApplicationRecord
   end
 
   def sync_sponsorships
+    return unless has_sponsors_listing?
     sponsors = fetch_all_sponsors(filter: 'active')
     sponsors.each do |login|
       funder = Account.find_or_create_by(login: login)
