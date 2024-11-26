@@ -32,7 +32,7 @@ class Account < ApplicationRecord
 
     logins.map(&:downcase).each do |login|
       account = Account.find_or_create_by(login: login)
-      account.update(has_sponsors_listing: true)
+      account.update(has_sponsors_listing: true) if account.changed?
     end
   end
 
