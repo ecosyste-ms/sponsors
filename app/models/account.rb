@@ -106,10 +106,10 @@ class Account < ApplicationRecord
     end
 
     c4 = doc.at('h4:contains("Current sponsors")')
-    current_sponsors = c4&.at('span.Counter')&.text&.delete(',') || 0
+    current_sponsors = c4&.at('span.Counter')&.text&.delete(',')&.to_i  || 0
     
     p4 = doc.at('h4:contains("Past sponsors")') || doc.at('h5:contains("Past sponsors")')
-    past_sponsors = p4&.at('span.Counter')&.text&.delete(',') || 0
+    past_sponsors = p4&.at('span.Counter')&.text&.delete(',')&.to_i  || 0
 
     if current_sponsors.zero? && past_sponsors.zero?
       sponsor_summary = doc.at_css('p.f3-light.color-fg-muted.mb-3')&.text&.strip
