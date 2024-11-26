@@ -1,3 +1,6 @@
+<% @meta_title = @account.login %>
+<% @meta_description = "#{@account.login} on GitHub Sponsors, showing their profile, sponsorships, and featured works" %>
+
 <div class="container-sm">
   <h1>
     <%= link_to @account.login, @account.html_url, target: :_blank %>
