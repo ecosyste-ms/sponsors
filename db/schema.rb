@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2024_11_26_091518) do
+ActiveRecord::Schema[8.0].define(version: 2024_11_26_155313) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -26,6 +26,7 @@ ActiveRecord::Schema[8.0].define(version: 2024_11_26_091518) do
     t.jsonb "sponsor_profile", default: {}
     t.integer "sponsorships_count", default: 0
     t.integer "active_sponsorships_count", default: 0
+    t.index ["login"], name: "index_accounts_on_login", unique: true
   end
 
   create_table "sponsorships", force: :cascade do |t|
