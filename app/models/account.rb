@@ -76,7 +76,8 @@ class Account < ApplicationRecord
     data = JSON.parse(resp.body)
 
     update(
-      data: data
+      data: data,
+      has_sponsors_listing: data['metadata']['has_sponsors_listing']  
     )
   end
 
