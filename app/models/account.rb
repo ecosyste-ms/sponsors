@@ -37,7 +37,7 @@ class Account < ApplicationRecord
   end
 
   def ping_repos
-    resp = Faraday.get(repos_api_url + '/ping') 
+    Faraday.get(repos_api_url + '/ping') 
   end
 
   def repos_api_url
