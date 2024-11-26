@@ -16,7 +16,7 @@ class Account < ApplicationRecord
   before_save :set_sponsors_count
 
   def set_sponsors_count
-    self.sponsors_count = total_sponsors
+    self.sponsors_count = total_sponsors == 0 ? sponsorships_as_maintainer.count : total_sponsors
     self.sponsorships_count = sponsorships_as_funder.count
     self.active_sponsorships_count = sponsorships_as_funder.active.count
   end
@@ -105,18 +105,21 @@ class Account < ApplicationRecord
       }
     end
 
-    sponsors = doc.at_css('#sponsors')&.css('.avatar')&.map { |avatar| avatar['alt'] } || []
-
     c4 = doc.at('h4:contains("Current sponsors")')
     current_sponsors = c4&.at('span.Counter')&.text&.delete(',') || 0
     
     p4 = doc.at('h4:contains("Past sponsors")') || doc.at('h5:contains("Past sponsors")')
     past_sponsors = p4&.at('span.Counter')&.text&.delete(',') || 0
 
+    if current_sponsors.zero? && past_sponsors.zero?
+      sponsor_summary = doc.at_css('p.f3-light.color-fg-muted.mb-3')&.text&.strip
+      total_sponsors_match = sponsor_summary&.match(/(\d+)\s+sponsors/)
+      current_sponsors = total_sponsors_match[1].to_i if total_sponsors_match
+    end
+
     update sponsor_profile: {
       bio: bio,
       featured_works: featured_works,
-      sponsors: sponsors,
       current_sponsors: current_sponsors,
       past_sponsors: past_sponsors
     }, last_synced_at: Time.now
