@@ -9,7 +9,7 @@ class AccountsController < ApplicationController
   end
 
   def sponsors
-    scope = Account.all.where('sponsorships_count > 0').order('sponsorships_count desc, updated_at DESC')
+    scope = Account.all.where('sponsorships_count > 0').order('active_sponsorships_count desc, sponsorships_count desc, updated_at DESC')
     @pagy, @accounts = pagy(scope)
   end
 end

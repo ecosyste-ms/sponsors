@@ -18,6 +18,7 @@ class Account < ApplicationRecord
   def set_sponsors_count
     self.sponsors_count = total_sponsors
     self.sponsorships_count = sponsorships_as_funder.count
+    self.active_sponsorships_count = sponsorships_as_funder.active.count
   end
 
   def self.import_from_repos
@@ -33,6 +34,10 @@ class Account < ApplicationRecord
       account = Account.find_or_create_by(login: login)
       account.update(has_sponsors_listing: true)
     end
+  end
+
+  def ping_repos
+    resp = Faraday.get(repos_api_url + '/ping') 
   end
 
   def repos_api_url
@@ -57,6 +62,8 @@ class Account < ApplicationRecord
     scrape_sponsored_page
 
     sync_sponsorships
+
+    ping_repos
 
     update last_synced_at: Time.now
   end
