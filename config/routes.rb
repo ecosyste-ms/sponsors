@@ -9,7 +9,10 @@ end if Rails.env.production?
 Rails.application.routes.draw do
   mount Sidekiq::Web => "/sidekiq"
   mount PgHero::Engine, at: "pghero"
-  
+
+  mount Rswag::Ui::Engine => '/docs'
+  mount Rswag::Api::Engine => '/docs'
+
   namespace :api, :defaults => {:format => :json} do
     namespace :v1 do
       resources :accounts, only: [:index, :show]
