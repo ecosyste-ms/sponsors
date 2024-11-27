@@ -6,6 +6,12 @@
     <%= link_to @account.login, @account.html_url, target: :_blank %>
   </h1>
 
+  <p class='text-muted'>
+    <small>
+    <%= link_to 'View JSON Representation', api_v1_account_path(@account), target: :_blank %>
+    </small>
+  </p>
+
   <% if @account.data.present? %>
     <% if @account.description.present? %>
       <p>
@@ -20,7 +26,7 @@
     <% end %>
 
     <ul class='list-unstyled'>
-      <% ['name', 'location', 'company', 'kind', 'followers', 'following', 'total_stars', 'repositories_count', 'created_at', 'updated_at'].each do |key| %>
+      <% ['name', 'location', 'company', 'kind', 'followers', 'following', 'total_stars', 'repositories_count', 'created_at', 'updated_at', 'last_synced_at'].each do |key| %>
         <% value = @account.data[key] %>
         <% next if value.blank? %>
         <li>

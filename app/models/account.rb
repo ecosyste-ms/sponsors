@@ -15,6 +15,14 @@ class Account < ApplicationRecord
 
   before_save :set_sponsors_count
 
+  def to_s
+    login
+  end
+
+  def to_param
+    login
+  end
+
   def set_sponsors_count
     self.sponsors_count = total_sponsors == 0 ? sponsorships_as_maintainer.count : total_sponsors
     self.sponsorships_count = sponsorships_as_funder.count
