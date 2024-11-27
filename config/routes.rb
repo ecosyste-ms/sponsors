@@ -10,6 +10,13 @@ Rails.application.routes.draw do
   mount Sidekiq::Web => "/sidekiq"
   mount PgHero::Engine, at: "pghero"
   
+  namespace :api, :defaults => {:format => :json} do
+    namespace :v1 do
+      resources :accounts, only: [:index, :show]
+      get 'sponsors', to: 'accounts#sponsors'
+    end
+  end
+
   get "up" => "rails/health#show", as: :rails_health_check
 
   resources :accounts, only: [:index, :show]
