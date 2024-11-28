@@ -1,6 +1,6 @@
 class Api::V1::AccountsController < Api::V1::ApplicationController
   def index
-    scope = Account.all.has_sponsors_profile.order('sponsors_count desc, updated_at DESC')
+    scope = Account.all.has_sponsors_listing.order('sponsors_count desc, updated_at DESC')
     @pagy, @accounts = pagy(scope)
   end
 
