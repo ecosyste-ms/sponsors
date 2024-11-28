@@ -30,10 +30,10 @@ class Account < ApplicationRecord
   end
 
   def set_sponsors_count
-    self.sponsors_count = (total_sponsors == 0 || sponsorships_as_maintainer.count > total_sponsors) ? sponsorships_as_maintainer.count : total_sponsors
+    self.sponsors_count = sponsorships_as_maintainer.count > total_sponsors ? sponsorships_as_maintainer.count : total_sponsors
     self.sponsorships_count = sponsorships_as_funder.count
     self.active_sponsorships_count = sponsorships_as_funder.active.count
-    self.active_sponsors_count = (current_sponsors == 0 || sponsorships_as_maintainer.active.count > current_sponsors) ? sponsorships_as_maintainer.active.count : current_sponsors
+    self.active_sponsors_count = sponsorships_as_maintainer.active.count > current_sponsors ? sponsorships_as_maintainer.active.count : current_sponsors
   end
 
   def self.import_from_repos
