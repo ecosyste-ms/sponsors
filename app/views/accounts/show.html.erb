@@ -59,14 +59,14 @@
       <h2>Featured Works</h2>
       <div class='row'>
         <% @account.sponsor_profile['featured_works'].each do |work| %>
-          <div class='col-md-4'>
-            <div class='card mb-3'>
+          <div class='col-md-4 mb-3'>
+            <div class='card h-100'>
               <div class='card-body'>
                 <h5><%= link_to work['title'], work['url'], target: :_blank %></h5>
                 <p><%= work['description'] %></p>
                 <small class='text-muted'>
-                Language: <%= work['language'] %> - 
-                Stars: <%= work['stars'] %>
+                  Language: <%= work['language'] %> - 
+                  Stars: <%= work['stars'] %>
                 </small>
               </div>
             </div>
