@@ -100,6 +100,17 @@
     <% end %>
   <% end %>
 
+  <% if @account.sponsorships_as_maintainer.any? %>
+    <h2>Sponsor Breakdown</h2>
+    <ul>
+      <% @account.sponsorships_as_maintainer.group_by{|s| s.funder.kind }.each do |kind, sponsorships| %>
+        <li>
+          <strong><%= kind.try(:humanize) || 'Unknown' %>:</strong> <%= sponsorships.count %> 
+        </li>
+      <% end %>
+    </ul>
+  <% end %>
+
   <% if @account.sponsorships_as_funder.any? %>
     <h2>Sponsorships</h2>
 
@@ -124,6 +135,15 @@
     </ul>
 
     <%= link_to 'View All', "https://github.com/#{@account.login}?tab=sponsoring" %>
+
+    <h2>Sponsorship Breakdown by Kind</h2>
+    <ul>
+      <% @account.sponsorships_as_funder.group_by { |s| s.maintainer.kind }.each do |kind, sponsorships| %>
+        <li>
+          <strong><%= kind.try(:humanize) || 'Unknown' %>:</strong> <%= sponsorships.count %>
+        </li>
+      <% end %>
+    </ul>
   <% end %>
 
 </div>
