@@ -1,0 +1,1 @@
+json.array! @sponsorships, partial: 'api/v1/sponsorships/sponsorship', as: :sponsorship

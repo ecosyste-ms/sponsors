@@ -13,4 +13,18 @@ class Api::V1::AccountsController < Api::V1::ApplicationController
     @pagy, @accounts = pagy(scope)
     render :index
   end
+
+  def sponsorships
+    @account = Account.find_by_login(params[:account_id])
+    scope = @account.sponsorships_as_maintainer.order('created_at DESC').includes(:maintainer, :funder)
+    @pagy, @sponsorships = pagy(scope)
+    render 'api/v1/sponsorships/index'
+  end
+
+  def account_sponsors
+    @account = Account.find_by_login(params[:account_id])
+    scope = @account.sponsorships_as_funder.order('created_at DESC').includes(:maintainer, :funder)
+    @pagy, @sponsorships = pagy(scope)
+    render 'api/v1/sponsorships/index'
+  end
 end

@@ -66,6 +66,76 @@ paths:
                 $ref: "#/components/schemas/Account"
         '404':
           description: "Account not found."
+  /account/{login}/sponsors:
+    get:
+      summary: "List Account Sponsors"
+      description: "List all sponsors for an account."
+      operationId: listAccountSponsors
+      parameters:
+        - name: login
+          in: path
+          description: "The login name for the account."
+          required: true
+          schema:
+            type: string
+        - name: page
+          in: query
+          description: pagination page number 
+          required: false
+          schema:
+            type: integer
+        - name: per_page
+          in: query
+          description: Number of records to return 
+          required: false
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: "A list of sponsors."
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Sponsorship"
+        '404':
+          description: "No sponsors found."
+  /account/{login}/sponsorships:
+    get:
+      summary: "List Account Sponsorships"
+      description: "List all sponsorships for an account."
+      operationId: listAccountSponsorships
+      parameters:
+        - name: login
+          in: path
+          description: "The login name for the account."
+          required: true
+          schema:
+            type: string
+        - name: page
+          in: query
+          description: pagination page number 
+          required: false
+          schema:
+            type: integer
+        - name: per_page
+          in: query
+          description: Number of records to return 
+          required: false
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: "A list of sponsorships."
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Sponsorship"
+        '404':
+          description: "No sponsorships found."
   /sponsors:
     get:
       summary: "List Sponsors"
@@ -102,6 +172,7 @@ components:
       required:
         - id
         - login
+        - has_sponsors_listing
         - data
         - created_at
         - updated_at
@@ -114,6 +185,8 @@ components:
         - api_url
         - html_url
         - sponsors_url
+        - sponsors_api_url
+        - sponsorships_api_url
       type: object
       properties:
         id:
@@ -123,6 +196,9 @@ components:
         login:
           type: string
           description: "The login name for the account."
+        has_sponsors_listing:
+          type: boolean
+          description: "Indicates if the account has a sponsors listing."
         data:
           type: object
           description: "The raw data for the account."
@@ -165,3 +241,39 @@ components:
         sponsors_url:
           type: string
           description: "The sponsors URL for the account."
+        sponsors_api_url:
+          type: string
+          description: "The sponsors API URL for the account."
+        sponsorships_api_url:
+          type: string
+          description: "The sponsorships API URL for the account."
+    Sponsorship:
+      required:
+        - id
+        - status
+        - created_at
+        - updated_at
+        - funder
+        - maintainer
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: "The unique identifier for the sponsorship."
+        status:
+          type: string
+          description: "The status of the sponsorship."
+        created_at:
+          type: string
+          format: date-time
+          description: "The date and time the sponsorship was created."
+        updated_at:
+          type: string
+          format: date-time
+          description: "The date and time the sponsorship was last updated."
+        funder:
+          $ref: "#/components/schemas/Account"
+        maintainer:
+          $ref: "#/components/schemas/Account"
+          

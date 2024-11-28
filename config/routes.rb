@@ -15,7 +15,10 @@ Rails.application.routes.draw do
 
   namespace :api, :defaults => {:format => :json} do
     namespace :v1 do
-      resources :accounts, only: [:index, :show]
+      resources :accounts, only: [:index, :show] do
+        get 'sponsors', to: 'accounts#account_sponsors'
+        get 'sponsorships', to: 'accounts#sponsorships'
+      end
       get 'sponsors', to: 'accounts#sponsors'
     end
   end
