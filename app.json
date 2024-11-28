@@ -1,0 +1,12 @@
+{
+  "cron": [
+    {
+      "command": "bundle exec rake accounts:sync_least_recent",
+      "schedule": "0 * * * *"
+    },
+    {
+      "command": "bundle exec rake accounts:import_from_repos",
+      "schedule": "0 0 * * *"
+    }
+  ]
+}

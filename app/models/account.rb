@@ -15,6 +15,12 @@ class Account < ApplicationRecord
 
   before_save :set_sponsors_count
 
+  def self.sync_least_recently_synced
+    Account.where(last_synced_at: nil).or(Account.where("last_synced_at < ?", 1.day.ago)).order('last_synced_at asc nulls first').limit(500).each do |account|
+      account.sync_async
+    end
+  end
+
   def to_s
     login
   end
@@ -39,13 +45,21 @@ class Account < ApplicationRecord
     logins = JSON.parse(resp.body)
 
     logins.map(&:downcase).each do |login|
-      account = Account.find_or_create_by(login: login)
-      account.update(has_sponsors_listing: true) if account.changed?
+      account = Account.find_by(login: login)
+
+      if account.nil?
+        account = Account.create(login: login, has_sponsors_listing: true)
+        account.sync_async
+      end
+
     end
   end
 
   def ping_repos
     Faraday.get(repos_api_url + '/ping') 
+  rescue => e
+    puts "Error pinging repos for #{login}"
+    puts e
   end
 
   def repos_api_url
@@ -93,7 +107,7 @@ class Account < ApplicationRecord
   end
 
   def sync_async
-    # TODO
+    AccountWorker.perform_async(id)
   end
 
   def scrape_sponsored_page
