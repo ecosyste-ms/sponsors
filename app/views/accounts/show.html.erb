@@ -45,7 +45,7 @@
 
     <ul class='list-unstyled'>
       <li>
-        <strong>Current Sponsors:</strong> <%= number_with_delimiter @account.current_sponsors %>
+        <strong>Current Sponsors:</strong> <%= number_with_delimiter @account.current_sponsors %><%= '+' if @account.active_sponsors_count == 5000 %>
       </li>
       <li>
         <strong>Past Sponsors:</strong> <%= number_with_delimiter @account.past_sponsors %>
