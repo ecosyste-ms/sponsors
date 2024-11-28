@@ -13,7 +13,8 @@
             <%= number_with_delimiter(account.active_sponsorships_count) %> actively sponsoring<br>
             <%= number_with_delimiter(account.sponsorships_count) %> total sponsored<br>
           <% else%>
-            <%= number_with_delimiter(account.sponsors_count) %> sponsors<br>
+            <%= number_with_delimiter(account.active_sponsors_count) %> active sponsors<br>
+            <%= number_with_delimiter(account.sponsors_count) %> total sponsors<br>
           <% end%>
           <%= number_with_delimiter(account.repositories_count || 0) %> public repositories
         </p>
