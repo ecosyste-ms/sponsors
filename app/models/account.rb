@@ -87,6 +87,9 @@ class Account < ApplicationRecord
       data: data,
       has_sponsors_listing: data['metadata']['has_sponsors_listing']  
     )
+  rescue => e
+    puts "Error syncing account #{login}"
+    puts e
   end
 
   def sync_async
@@ -131,6 +134,9 @@ class Account < ApplicationRecord
       current_sponsors: current_sponsors,
       past_sponsors: past_sponsors
     }, last_synced_at: Time.now
+  rescue => e
+    puts "Error scraping sponsored page for #{login}"
+    puts e
   end
 
   def kind
@@ -181,6 +187,10 @@ class Account < ApplicationRecord
     end
 
     return sponsors
+  rescue => e
+    puts "Error fetching sponsors for #{login}"
+    puts e
+    return []
   end
 
   def sync_sponsorships
