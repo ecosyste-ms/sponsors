@@ -6,6 +6,7 @@ class Api::V1::AccountsController < Api::V1::ApplicationController
 
   def show
     @account = Account.find_by_login(params[:id])
+    raise ActiveRecord::RecordNotFound unless @account
   end
 
   def sponsors
@@ -16,6 +17,7 @@ class Api::V1::AccountsController < Api::V1::ApplicationController
 
   def sponsorships
     @account = Account.find_by_login(params[:account_id])
+    raise ActiveRecord::RecordNotFound unless @account
     scope = @account.sponsorships_as_maintainer.order('created_at DESC').includes(:maintainer, :funder)
     @pagy, @sponsorships = pagy(scope)
     render 'api/v1/sponsorships/index'
@@ -23,6 +25,7 @@ class Api::V1::AccountsController < Api::V1::ApplicationController
 
   def account_sponsors
     @account = Account.find_by_login(params[:account_id])
+    raise ActiveRecord::RecordNotFound unless @account
     scope = @account.sponsorships_as_funder.order('created_at DESC').includes(:maintainer, :funder)
     @pagy, @sponsorships = pagy(scope)
     render 'api/v1/sponsorships/index'
