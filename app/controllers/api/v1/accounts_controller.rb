@@ -5,7 +5,7 @@ class Api::V1::AccountsController < Api::V1::ApplicationController
   end
 
   def show
-    @account = Account.find_by_login(params[:id])
+    @account = Account.find_by_login(params[:id].downcase)
     raise ActiveRecord::RecordNotFound unless @account
   end
 
@@ -16,7 +16,7 @@ class Api::V1::AccountsController < Api::V1::ApplicationController
   end
 
   def sponsorships
-    @account = Account.find_by_login(params[:account_id])
+    @account = Account.find_by_login(params[:account_id].downcase)
     raise ActiveRecord::RecordNotFound unless @account
     scope = @account.sponsorships_as_maintainer.order('created_at DESC').includes(:maintainer, :funder)
     @pagy, @sponsorships = pagy(scope)
@@ -24,7 +24,7 @@ class Api::V1::AccountsController < Api::V1::ApplicationController
   end
 
   def account_sponsors
-    @account = Account.find_by_login(params[:account_id])
+    @account = Account.find_by_login(params[:account_id].downcase)
     raise ActiveRecord::RecordNotFound unless @account
     scope = @account.sponsorships_as_funder.order('created_at DESC').includes(:maintainer, :funder)
     @pagy, @sponsorships = pagy(scope)

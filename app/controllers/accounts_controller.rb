@@ -5,7 +5,7 @@ class AccountsController < ApplicationController
   end
 
   def show
-    @account = Account.find_by_login(params[:id])
+    @account = Account.find_by_login(params[:id].downcase)
   end
 
   def sponsors
