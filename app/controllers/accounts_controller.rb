@@ -6,6 +6,7 @@ class AccountsController < ApplicationController
 
   def show
     @account = Account.find_by_login(params[:id].downcase)
+    raise ActiveRecord::RecordNotFound if @account.nil?
   end
 
   def sponsors
