@@ -288,7 +288,6 @@ class Account < ApplicationRecord
       break unless response.status == 200
   
       data = JSON.parse(response.body)
-      pp data
 
       user_data = data.dig('data', kind)
       break unless user_data
