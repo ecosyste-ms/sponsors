@@ -86,6 +86,8 @@ class Account < ApplicationRecord
 
     sync_sponsorships
 
+    sync_funder
+
     ping_repos
 
     update last_synced_at: Time.now
@@ -227,5 +229,76 @@ class Account < ApplicationRecord
       s.update(status: 'inactive')
       funder.save
     end
+  end
+
+  def sync_funder
+    data = fetch_sponsorships_github_graphql
+    return unless data.present?
+
+    data.each do |sponsor|
+      maintainer = Account.find_or_create_by(login: sponsor['maintainer']['login'].downcase)
+      s = Sponsorship.find_or_create_by(funder: self, maintainer: maintainer)
+      s.update(status: 'active')
+      maintainer.save
+    end
+  end
+
+  def fetch_sponsorships_github_graphql
+    sponsors = []
+    after_cursor = nil
+  
+    loop do
+      query = <<~GRAPHQL
+        query($after: String) {
+          #{kind}(login: "#{login}") {
+            sponsorshipsAsSponsor(first: 100, after: $after) {
+              totalCount
+              nodes {
+                maintainer {
+                  login
+                  avatarUrl
+                  bio
+                }
+              }
+              pageInfo {
+                endCursor
+                hasNextPage
+              }
+            }
+          }
+        }
+      GRAPHQL
+  
+      response = Faraday.post(
+        "https://api.github.com/graphql",
+        { query: query, variables: { after: after_cursor } }.to_json,
+        {
+          "Authorization" => "Bearer #{ENV['GITHUB_API_TOKEN']}",
+          "Content-Type" => "application/json"
+        }
+      )
+  
+      # break unless response.status == 200
+  
+      data = JSON.parse(response.body)
+      pp data
+      user_data = data.dig('data', kind)
+      break unless user_data
+  
+      sponsorships = user_data.dig('sponsorshipsAsSponsor')
+      break unless sponsorships
+  
+      sponsors.concat(sponsorships['nodes'])
+  
+      page_info = sponsorships['pageInfo']
+      break unless page_info['hasNextPage']
+  
+      after_cursor = page_info['endCursor']
+    end
+  
+    pp sponsors
+  rescue => e
+    puts "Error fetching sponsorships via GraphQL for #{login}"
+    puts e
   end
 end
