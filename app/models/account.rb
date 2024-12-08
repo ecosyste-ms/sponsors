@@ -298,10 +298,11 @@ class Account < ApplicationRecord
       after_cursor = page_info['endCursor']
     end
   
-    sponsors
+    return sponsors
   rescue => e
     puts "Error fetching sponsorships via GraphQL for #{login}"
     puts e
+    return []
   end
 
   def self.token_set_key
