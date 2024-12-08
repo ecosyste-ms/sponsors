@@ -16,6 +16,9 @@ class Account < ApplicationRecord
 
   scope :active_funders, -> { where('active_sponsorships_count > 0') }
 
+  scope :users, -> { where("data->>'kind' = ?", 'user') }
+  scope :organizations, -> { where("data->>'kind' = ?", 'organization') }
+
   before_save :set_sponsors_count
 
   def self.sync_least_recently_synced

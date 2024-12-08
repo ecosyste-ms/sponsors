@@ -1,13 +1,21 @@
 <% @meta_title = "Maintainers" %>
 
 <div class="container-sm">
-  <div class="alert alert-info">
-    <p class="mb-1"><strong>Maintainers on GitHub Sponsors:</strong> <%= number_with_delimiter(Account.has_sponsors_listing.count) %></p>
-    <p class="mb-1"><strong>Maintainers with Active Sponsorships:</strong> <%= number_with_delimiter(Account.has_active_sponsorships.count) %></p>
-    <p class="mb-1"><strong>Funders  on GitHub Sponsors:</strong> <%= number_with_delimiter(Account.with_sponsorships.count) %></p>
-    <p class="mb-1"><strong>Active Funders:</strong> <%= number_with_delimiter(Account.active_funders.count) %></p>
-    <p class="mb-1"><strong>Active Sponsorships:</strong> <%= number_with_delimiter(Sponsorship.active.count) %></p>
-    <p class="mb-1"><strong>Total Sponsorships:</strong> <%= number_with_delimiter(Sponsorship.count) %></p>
+  <div class="row alert alert-info">
+    <div class="col-md-6">
+        <p class="mb-1"><strong>Total Maintainers:</strong> <%= number_with_delimiter(Account.has_sponsors_listing.count) %></p>
+        <p class="mb-1"><strong>Maintainers with Active Sponsorships:</strong> <%= number_with_delimiter(Account.has_active_sponsorships.count) %></p>
+        <p class="mb-1"><strong>User Maintainers:</strong> <%= number_with_delimiter(Account.users.has_sponsors_listing.count) %></p>
+        <p class="mb-1"><strong>Organization Maintainers:</strong> <%= number_with_delimiter(Account.organizations.has_sponsors_listing.count) %></p>
+        <p class="mb-1"><strong>Active Sponsorships:</strong> <%= number_with_delimiter(Sponsorship.active.count) %></p>
+    </div>
+    <div class="col-md-6">
+      <p class="mb-1"><strong>Total Funders:</strong> <%= number_with_delimiter(Account.with_sponsorships.count) %></p>
+        <p class="mb-1"><strong>Active Funders:</strong> <%= number_with_delimiter(Account.active_funders.count) %></p>
+        <p class="mb-1"><strong>Organization Funders:</strong> <%= number_with_delimiter(Account.organizations.with_sponsorships.count) %></p>
+        <p class="mb-1"><strong>User Funders:</strong> <%= number_with_delimiter(Account.users.with_sponsorships.count) %></p>
+        <p class="mb-1"><strong>Total Sponsorships:</strong> <%= number_with_delimiter(Sponsorship.count) %></p>
+    </div>
   </div>
 
   <ul class="nav nav-tabs my-3">
