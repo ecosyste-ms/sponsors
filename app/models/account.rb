@@ -235,6 +235,9 @@ class Account < ApplicationRecord
     data = fetch_sponsorships_github_graphql
     return unless data.present?
 
+    # update all existing sponsorships to inactive
+    sponsorships_as_funder.update_all(status: 'inactive')
+
     data.each do |sponsor|
       maintainer = Account.find_or_create_by(login: sponsor['maintainer']['login'].downcase)
       s = Sponsorship.find_or_create_by(funder: self, maintainer: maintainer)
