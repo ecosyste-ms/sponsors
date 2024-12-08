@@ -273,15 +273,14 @@ class Account < ApplicationRecord
         "https://api.github.com/graphql",
         { query: query, variables: { after: after_cursor } }.to_json,
         {
-          "Authorization" => "Bearer #{ENV['GITHUB_API_TOKEN']}",
+          "Authorization" => "Bearer #{Account.fetch_random_token}",
           "Content-Type" => "application/json"
         }
       )
   
-      # break unless response.status == 200
+      break unless response.status == 200
   
       data = JSON.parse(response.body)
-      pp data
       user_data = data.dig('data', kind)
       break unless user_data
   
@@ -300,5 +299,41 @@ class Account < ApplicationRecord
   rescue => e
     puts "Error fetching sponsorships via GraphQL for #{login}"
     puts e
+  end
+
+  def self.token_set_key
+    "github_tokens"
+  end
+
+  def self.list_tokens
+    REDIS.smembers(token_set_key)
+  end
+
+  def self.fetch_random_token
+    REDIS.srandmember(token_set_key)
+  end
+
+  def self.add_tokens(tokens)
+    REDIS.sadd(token_set_key, tokens)
+  end
+
+  def self.remove_token(token)
+    REDIS.srem(token_set_key, token)
+  end
+
+  def self.check_tokens
+    list_tokens.each do |token|
+      begin
+        api_client(token).rate_limit!
+      rescue Octokit::Unauthorized, Octokit::AccountSuspended
+        puts "Removing token #{token}"
+        remove_token(token)
+      end
+    end
+  end
+
+  def self.api_client(token = nil, options = {})
+    token = fetch_random_token if token.nil?
+    Octokit::Client.new({access_token: token}.merge(options))
   end
 end
