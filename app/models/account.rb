@@ -239,7 +239,7 @@ class Account < ApplicationRecord
     return unless data.present?
 
     # update all existing sponsorships to inactive
-    sponsorships_as_funder.update_all(status: 'inactive')
+    # sponsorships_as_funder.update_all(status: 'inactive') # disabled for now as github graphql doesn't return correct amount of active sponsorships
 
     data.each do |sponsor|
       maintainer = Account.find_or_create_by(login: sponsor['maintainer']['login'].downcase)
@@ -254,6 +254,7 @@ class Account < ApplicationRecord
     after_cursor = nil
   
     loop do
+      puts "after_cursor: #{after_cursor}"
       query = <<~GRAPHQL
         query($after: String) {
           #{kind}(login: "#{login}") {
@@ -287,6 +288,8 @@ class Account < ApplicationRecord
       break unless response.status == 200
   
       data = JSON.parse(response.body)
+      pp data
+
       user_data = data.dig('data', kind)
       break unless user_data
   
