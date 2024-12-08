@@ -1,6 +1,15 @@
 <% @meta_title = "Maintainers" %>
 
 <div class="container-sm">
+  <div class="alert alert-info">
+    <p class="mb-1"><strong>Maintainers on GitHub Sponsors:</strong> <%= number_with_delimiter(Account.has_sponsors_listing.count) %></p>
+    <p class="mb-1"><strong>Maintainers with Active Sponsorships:</strong> <%= number_with_delimiter(Account.has_active_sponsorships.count) %></p>
+    <p class="mb-1"><strong>Funders  on GitHub Sponsors:</strong> <%= number_with_delimiter(Account.with_sponsorships.count) %></p>
+    <p class="mb-1"><strong>Active Funders:</strong> <%= number_with_delimiter(Account.active_funders.count) %></p>
+    <p class="mb-1"><strong>Active Sponsorships:</strong> <%= number_with_delimiter(Sponsorship.active.count) %></p>
+    <p class="mb-1"><strong>Total Sponsorships:</strong> <%= number_with_delimiter(Sponsorship.count) %></p>
+  </div>
+
   <ul class="nav nav-tabs my-3">
     <li class="nav-item">
       <a class="nav-link active" href="<%= root_path %>">
