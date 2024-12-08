@@ -298,7 +298,7 @@ class Account < ApplicationRecord
       after_cursor = page_info['endCursor']
     end
   
-    pp sponsors
+    sponsors
   rescue => e
     puts "Error fetching sponsorships via GraphQL for #{login}"
     puts e
