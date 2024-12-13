@@ -1,6 +1,7 @@
 class AccountsController < ApplicationController
   def index
     scope = Account.all.has_sponsors_listing.order('sponsors_count desc, updated_at DESC')
+    scope = scope.kind(params[:kind]) if params[:kind].present?
     @pagy, @accounts = pagy(scope)
   end
 
@@ -11,6 +12,7 @@ class AccountsController < ApplicationController
 
   def sponsors
     scope = Account.all.where('sponsorships_count > 0').order('active_sponsorships_count desc, sponsorships_count desc, updated_at DESC')
+    scope = scope.kind(params[:kind]) if params[:kind].present?
     @pagy, @accounts = pagy(scope)
   end
 end

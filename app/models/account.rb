@@ -16,6 +16,7 @@ class Account < ApplicationRecord
 
   scope :active_funders, -> { where('active_sponsorships_count > 0') }
 
+  scope :kind, ->(kind) { where("data->>'kind' = ?", kind) }
   scope :users, -> { where("data->>'kind' = ?", 'user') }
   scope :organizations, -> { where("data->>'kind' = ?", 'organization') }
 
