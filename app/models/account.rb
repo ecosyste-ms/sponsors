@@ -23,7 +23,7 @@ class Account < ApplicationRecord
   before_save :set_sponsors_count
 
   def self.sync_least_recently_synced
-    Account.where(last_synced_at: nil).or(Account.where("last_synced_at < ?", 1.day.ago)).order('last_synced_at asc nulls first').limit(500).each do |account|
+    Account.where(last_synced_at: nil).or(Account.where("last_synced_at < ?", 1.day.ago)).order('last_synced_at asc nulls first').limit(1000).each do |account|
       account.sync_async
     end
   end
