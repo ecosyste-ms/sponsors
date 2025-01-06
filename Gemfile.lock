@@ -140,24 +140,6 @@ GEM
     ffi (1.17.1-x86_64-linux-musl)
     globalid (1.2.1)
       activesupport (>= 6.1)
-    google-protobuf (4.29.2)
-      bigdecimal
-      rake (>= 13)
-    google-protobuf (4.29.2-aarch64-linux)
-      bigdecimal
-      rake (>= 13)
-    google-protobuf (4.29.2-arm64-darwin)
-      bigdecimal
-      rake (>= 13)
-    google-protobuf (4.29.2-x86-linux)
-      bigdecimal
-      rake (>= 13)
-    google-protobuf (4.29.2-x86_64-darwin)
-      bigdecimal
-      rake (>= 13)
-    google-protobuf (4.29.2-x86_64-linux)
-      bigdecimal
-      rake (>= 13)
     hashdiff (1.1.2)
     i18n (1.14.6)
       concurrent-ruby (~> 1.0)
@@ -199,7 +181,6 @@ GEM
     net-protocol (0.2.2)
       timeout
     net-smtp (0.5.0)
-      net-protocol
     nio4r (2.7.4)
     nokogiri (1.18.1)
       mini_portile2 (~> 2.8.2)
@@ -227,8 +208,6 @@ GEM
     ostruct (0.6.1)
     pagy (9.3.3)
     pg (1.5.9)
-    pg_query (6.0.0)
-      google-protobuf (>= 3.25.3)
     pghero (3.6.1)
       activerecord (>= 6.1)
     popper_js (2.11.8)
@@ -398,7 +377,6 @@ DEPENDENCIES
   ostruct
   pagy
   pg (~> 1.5)
-  pg_query
   pghero
   puma (~> 6.3)
   rack-attack
@@ -474,12 +452,6 @@ CHECKSUMS
   ffi (1.17.1-x86_64-linux-gnu) sha256=8c0ade2a5d19f3672bccfe3b58e016ae5f159e3e2e741c856db87fcf07c903d0
   ffi (1.17.1-x86_64-linux-musl) sha256=3a343086820c96d6fbea4a5ef807fb69105b2b8174678f103b3db210c3f78401
   globalid (1.2.1) sha256=70bf76711871f843dbba72beb8613229a49429d1866828476f9c9d6ccc327ce9
-  google-protobuf (4.29.2) sha256=95cde89ad8e2d4006725430904a422462f0c2d7ddbdd4092d997441c978052f0
-  google-protobuf (4.29.2-aarch64-linux) sha256=bca9ad4c89f3b583b022393ac423bb5783f8d1881ad74f05a377b0c0ad0e2522
-  google-protobuf (4.29.2-arm64-darwin) sha256=66bd1a7fcf2b41701bedc2f68494aed5af83f63978fea202c58b3d16c8ce5a37
-  google-protobuf (4.29.2-x86-linux) sha256=65b3f14670b245f074133a7a96a9367c305bef37c7fd70183d0a845307df704f
-  google-protobuf (4.29.2-x86_64-darwin) sha256=b7b5636598fa75ce49bc090fd2bf1cac59feba80011958d1ee99cbe09e08e73c
-  google-protobuf (4.29.2-x86_64-linux) sha256=5335a35189eadbcedf9fe15f1ca0ad01b1cb421c38492528d7d48715aacba8dc
   hashdiff (1.1.2) sha256=2c30eeded6ed3dce8401d2b5b99e6963fe5f14ed85e60dd9e33c545a44b71a77
   i18n (1.14.6) sha256=dc229a74f5d181f09942dd60ab5d6e667f7392c4ee826f35096db36d1fe3614c
   io-console (0.8.0) sha256=cd6a9facbc69871d69b2cb8b926fc6ea7ef06f06e505e81a64f14a470fddefa2
@@ -516,7 +488,6 @@ CHECKSUMS
   ostruct (0.6.1) sha256=09a3fb7ecc1fa4039f25418cc05ae9c82bd520472c5c6a6f515f03e4988cb817
   pagy (9.3.3) sha256=4831418eb4ec7cc5658ea57de559cc3a960286db36f98d4c1c65e19db0e2bb60
   pg (1.5.9) sha256=761efbdf73b66516f0c26fcbe6515dc7500c3f0aa1a1b853feae245433c64fdc
-  pg_query (6.0.0) sha256=fbf09a4e900cee1d61e2bbfda1fefdbc35bc83c5f1c7ae1be1c6ffc5ae0f5c04
   pghero (3.6.1) sha256=e6d4f6ec3979d4828dafcd1eaa4214e70279fe2502b9fe5bd632d8333aa79cd4
   popper_js (2.11.8) sha256=f4b0be717fc0d50bdb3dbbc55788525a9e0e8f640b76c9971fc34ee609eadbd2
   psych (5.2.2) sha256=a4a9477c85d3e858086c38cf64e7096abe40d1b1eed248b01020dec0ff9906ab
@@ -570,7 +541,7 @@ CHECKSUMS
   zeitwerk (2.7.1) sha256=0945986050e4907140895378e74df1fe882a2271ed087cc6c6d6b00d415a2756
 
 RUBY VERSION
-   ruby 3.4.1p108
+   ruby 3.4.1p0
 
 BUNDLED WITH
    2.6.2

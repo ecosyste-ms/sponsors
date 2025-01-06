@@ -15,7 +15,7 @@ gem "faraday-retry"
 gem "faraday-follow_redirects"
 gem "pagy"
 gem "pghero"
-gem "pg_query"
+# gem "pg_query"
 gem 'bootstrap'
 gem 'bootstrap-icons-helper'
 gem "rack-attack"
