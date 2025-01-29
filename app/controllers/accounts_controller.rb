@@ -22,10 +22,6 @@ class AccountsController < ApplicationController
       .order(sponsors_count: :desc)
       .limit(1000)
       .pluck(:login, :sponsors_count)
-      .map do |login, sponsors_count|
-        color = top_accounts.include?(login) ? "#FFD700" : "#CCCCCC" # Gold for top 3, gray for others
-        { name: login, data: [[login, sponsors_count]], color: color }
-      end
     
     @top_50_accounts_by_total_sponsorships = @accounts_by_total_sponsorships.first(50)
 
