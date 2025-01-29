@@ -1,0 +1,37 @@
+<div class="container-sm">
+  <h2>
+    Top 1,000 accounts by total sponsors
+  </h2>
+
+  <%= column_chart @accounts_by_total_sponsors, thousands: "," %>
+
+  <h2 class='mt-5'>
+    Top 50 accounts by total sponsors
+  </h2>
+
+  <%= column_chart @top_50_accounts_by_total_sponsors, thousands: "," %>
+
+  <h2 class='mt-5'>
+    Top 1,000 users by total sponsors
+  </h2>
+
+  <%= column_chart @top_1000_users_by_total_sponsors, thousands: "," %>
+
+  <h2 class='mt-5'>
+    Top 50 users by total sponsors
+  </h2>
+
+  <%= column_chart @top_50_users_by_total_sponsors, thousands: "," %>
+
+  <h2 class='mt-5'>
+    Top 1,000 organizations by total sponsors
+  </h2>
+
+  <%= column_chart @top_1000_organizations_by_total_sponsors, thousands: "," %>
+
+  <h2 class='mt-5'>
+    Top 50 organizations by total sponsors
+  </h2>
+
+  <%= column_chart @top_50_organizations_by_total_sponsors, thousands: "," %>
+</div>
