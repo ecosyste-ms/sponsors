@@ -35,6 +35,8 @@ gem 'after_commit_action'
 gem "sanitize-url"
 gem 'redis'
 gem 'octokit'
+gem 'chartkick'
+gem 'groupdate'
 
 group :development, :test do
   gem "debug", platforms: %i[ mri mingw x64_mingw ]
