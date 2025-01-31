@@ -7,7 +7,7 @@
     Toggle Axis
   </button>
 
-  <%= column_chart @accounts_by_total_sponsorships, thousands: ",", library: {
+  <%= column_chart @accounts_by_total_sponsorships, thousands: ",", colors: ["#7878EF"] , library: {
     scales: { x: { display: params[:hide_axis] != "true" }, y: { display: params[:hide_axis] != "true" } }
   } %>
 
@@ -15,7 +15,7 @@
     Top 50 accounts by total sponsorships
   </h2>
 
-  <%= column_chart @top_50_accounts_by_total_sponsorships, thousands: ",", library: {
+  <%= column_chart @top_50_accounts_by_total_sponsorships, thousands: ",", colors: ["#7878EF"] , library: {
     scales: { x: { display: params[:hide_axis] != "true" }, y: { display: params[:hide_axis] != "true" } }
   } %>
 
@@ -23,7 +23,7 @@
     Top 1,000 users by total sponsorships
   </h2>
 
-  <%= column_chart @top_1000_users_by_total_sponsorships, thousands: ",", library: {
+  <%= column_chart @top_1000_users_by_total_sponsorships, thousands: ",", colors: ["#7878EF"] , library: {
     scales: { x: { display: params[:hide_axis] != "true" }, y: { display: params[:hide_axis] != "true" } }
   } %>
 
@@ -31,7 +31,7 @@
     Top 50 users by total sponsorships
   </h2>
 
-  <%= column_chart @top_50_users_by_total_sponsorships, thousands: ",", library: {
+  <%= column_chart @top_50_users_by_total_sponsorships, thousands: ",", colors: ["#7878EF"] , library: {
     scales: { x: { display: params[:hide_axis] != "true" }, y: { display: params[:hide_axis] != "true" } }
   } %>
 
@@ -39,7 +39,7 @@
     Top 1,000 organizations by total sponsorships
   </h2>
 
-  <%= column_chart @top_1000_organizations_by_total_sponsorships, thousands: ",", library: {
+  <%= column_chart @top_1000_organizations_by_total_sponsorships, thousands: ",", colors: ["#7878EF"] , library: {
     scales: { x: { display: params[:hide_axis] != "true" }, y: { display: params[:hide_axis] != "true" } }
   } %>
 
@@ -47,7 +47,7 @@
     Top 50 organizations by total sponsorships
   </h2>
 
-  <%= column_chart @top_50_organizations_by_total_sponsorships, thousands: ",", library: {
+  <%= column_chart @top_50_organizations_by_total_sponsorships, thousands: ",", colors: ["#7878EF"] , library: {
     scales: { x: { display: params[:hide_axis] != "true" }, y: { display: params[:hide_axis] != "true" } }
   } %>
 
@@ -68,7 +68,7 @@
         .sort_by { |pkg| -pkg['downloads'] }.first(100)
         .map { |pkg| [pkg['name'], pkg['downloads']] }
         .to_h,
-      library: { yAxisID: "y" },
+      library: { yAxisID: "y", backgroundColor: "#7878EF", borderColor: "#7878EF" }
     },
     { 
       name: "Funding (Scaled)", 
@@ -85,7 +85,7 @@
           [pkg['name'], sponsors_count * 100000]
         }
         .to_h,
-      library: { yAxisID: "y2" }
+        library: { yAxisID: "y2", backgroundColor: "#45E56E", borderColor: "#45E56E" }
     }
   ], legend: { display: params[:hide_axis] != "true" }, library: {
     scales: {
