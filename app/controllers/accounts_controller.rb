@@ -40,6 +40,13 @@ class AccountsController < ApplicationController
       .pluck(:login, :sponsors_count)
 
     @top_50_organizations_by_total_sponsorships = @top_1000_organizations_by_total_sponsorships.first(50)
+
+    @critical_packages = load_critical_packages
+  
+    ecosystem_counts = @critical_packages.each_with_object(Hash.new(0)) { |pkg, counts| counts[pkg['ecosystem']] += 1 }
+
+    # Sort ecosystems by frequency (most frequent first)
+    @ecosystems = ecosystem_counts.sort_by { |_, count| -count }.map(&:first)
   end
 
   def sponsor_charts
@@ -63,5 +70,27 @@ class AccountsController < ApplicationController
       .pluck(:login, :sponsorships_count)
 
     @top_50_organizations_by_total_sponsors = @top_1000_organizations_by_total_sponsors.first(50)
+  end
+
+  private 
+
+  def load_critical_packages
+    Rails.cache.fetch('critical_packages', expires_in: 1.week) do
+      critical_packages = []
+      page = 1
+
+      loop do
+        url = "https://packages.ecosyste.ms/api/v1/packages/critical?funding=true&per_page=1000&page=#{page}"
+        response = Faraday.get url
+        data = JSON.parse(response.body)
+        break if data.empty?
+        data.each do |package|
+          critical_packages << package if package['funding_links'].any?{|link| link.include?('github.com/sponsors') } && !%w[docker puppet].include?(package['ecosystem'])
+        end
+        page += 1
+      end
+
+      critical_packages
+    end
   end
 end

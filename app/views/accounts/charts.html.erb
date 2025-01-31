@@ -3,35 +3,128 @@
     Top 1,000 accounts by total sponsorships
   </h2>
 
-  <%= column_chart @accounts_by_total_sponsorships, thousands: "," %>
+  <button id="toggle-axis" class="btn btn-primary mb-3">
+    Toggle Axis
+  </button>
+
+  <%= column_chart @accounts_by_total_sponsorships, thousands: ",", library: {
+    scales: { x: { display: params[:hide_axis] != "true" }, y: { display: params[:hide_axis] != "true" } }
+  } %>
 
   <h2 class='mt-5'>
     Top 50 accounts by total sponsorships
   </h2>
 
-  <%= column_chart @top_50_accounts_by_total_sponsorships, thousands: "," %>
+  <%= column_chart @top_50_accounts_by_total_sponsorships, thousands: ",", library: {
+    scales: { x: { display: params[:hide_axis] != "true" }, y: { display: params[:hide_axis] != "true" } }
+  } %>
 
   <h2 class='mt-5'>
     Top 1,000 users by total sponsorships
   </h2>
 
-  <%= column_chart @top_1000_users_by_total_sponsorships, thousands: "," %>
+  <%= column_chart @top_1000_users_by_total_sponsorships, thousands: ",", library: {
+    scales: { x: { display: params[:hide_axis] != "true" }, y: { display: params[:hide_axis] != "true" } }
+  } %>
 
   <h2 class='mt-5'>
     Top 50 users by total sponsorships
   </h2>
 
-  <%= column_chart @top_50_users_by_total_sponsorships, thousands: "," %>
+  <%= column_chart @top_50_users_by_total_sponsorships, thousands: ",", library: {
+    scales: { x: { display: params[:hide_axis] != "true" }, y: { display: params[:hide_axis] != "true" } }
+  } %>
 
   <h2 class='mt-5'>
     Top 1,000 organizations by total sponsorships
   </h2>
 
-  <%= column_chart @top_1000_organizations_by_total_sponsorships, thousands: "," %>
+  <%= column_chart @top_1000_organizations_by_total_sponsorships, thousands: ",", library: {
+    scales: { x: { display: params[:hide_axis] != "true" }, y: { display: params[:hide_axis] != "true" } }
+  } %>
 
   <h2 class='mt-5'>
     Top 50 organizations by total sponsorships
   </h2>
 
-  <%= column_chart @top_50_organizations_by_total_sponsorships, thousands: "," %>
+  <%= column_chart @top_50_organizations_by_total_sponsorships, thousands: ",", library: {
+    scales: { x: { display: params[:hide_axis] != "true" }, y: { display: params[:hide_axis] != "true" } }
+  } %>
+
+  <hr>
+
+  <% @ecosystems.each do |ecosystem| %>
+  
+  <% ecosystem_packages = @critical_packages.select { |pkg| pkg['downloads'] && pkg['downloads'] > 0 }.select { |pkg| pkg['ecosystem'] == ecosystem } %>
+  <% if ecosystem_packages.length > 5 %>
+
+  <h3 class='my-3'>Ecosystem: <%= ecosystem %></h3>
+  
+  <%= column_chart [
+    { 
+      name: "Downloads", 
+      data: ecosystem_packages
+        .select { |pkg| pkg['downloads'] && pkg['downloads'] > 0 }
+        .sort_by { |pkg| -pkg['downloads'] }.first(100)
+        .map { |pkg| [pkg['name'], pkg['downloads']] }
+        .to_h,
+      library: { yAxisID: "y" },
+    },
+    { 
+      name: "Funding (Scaled)", 
+      data: ecosystem_packages
+        .select { |pkg| pkg['downloads'] && pkg['downloads'] > 0 }
+        .sort_by { |pkg| -pkg['downloads'] }.first(100)
+        .map { |pkg|
+          ghs_slug = pkg['funding_links']
+            .select { |l| l.include?('github.com/sponsors') }
+            .first
+            &.split('/')&.last&.split('#')&.first
+          account = Account.find_by_login(ghs_slug.to_s.downcase)
+          sponsors_count = account&.sponsors_count.to_i
+          [pkg['name'], sponsors_count * 100000]
+        }
+        .to_h,
+      library: { yAxisID: "y2" }
+    }
+  ], legend: { display: params[:hide_axis] != "true" }, library: {
+    scales: {
+      x: { 
+        display: params[:hide_axis] != "true",
+        ticks: { display: params[:hide_axis] != "true" }, # Hides tick labels
+        scaleLabel: { display: params[:hide_axis] != "true" } # Hides axis label
+      },
+      y: { 
+        id: "y", 
+        position: "left", 
+        display: params[:hide_axis] != "true",
+        ticks: { beginAtZero: true, display: params[:hide_axis] != "true" }, # Hides tick labels
+        scaleLabel: { display: params[:hide_axis] != "true", labelString: "Downloads" } # Hides axis label
+      },
+      y2: { 
+        id: "y2", 
+        position: "right", 
+        display: params[:hide_axis] != "true",
+        type: "linear", 
+        ticks: { beginAtZero: true, min: 0, suggestedMax: 1000, display: params[:hide_axis] != "true" }, # Hides tick labels
+        scaleLabel: { display: params[:hide_axis] != "true", labelString: "Funding ($)" } # Hides axis label
+      }
+    }
+  } %>
+
+  <% end %>
+  <% end %>
+
 </div>
+
+<script>
+  document.getElementById("toggle-axis").addEventListener("click", function () {
+    const url = new URL(window.location.href);
+    if (url.searchParams.get("hide_axis") === "true") {
+      url.searchParams.delete("hide_axis");
+    } else {
+      url.searchParams.set("hide_axis", "true");
+    }
+    window.location.href = url.toString();
+  });
+</script>
