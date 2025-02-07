@@ -5,9 +5,9 @@
     </button>
     <ul class="dropdown-menu">
       <li><a class="dropdown-item <%= 'active' if params[:sort] == 'login' %>" href="<%= url_for(request.query_parameters.merge(sort: 'login', order: 'asc')) %>">Login</a></li>
-      <li><a class="dropdown-item <%= 'active' if params[:sort] == 'sponsors_count' %>" href="<%= url_for(request.query_parameters.merge(sort: 'sponsors_count', order: 'desc')) %>">Sponsors</a></li>
+      <li><a class="dropdown-item <%= 'active' if params[:sort] == 'sponsors_count' %>" href="<%= url_for(request.query_parameters.merge(sort: 'sponsors_count', order: 'desc')) %>">Total Sponsors</a></li>
       <li><a class="dropdown-item <%= 'active' if params[:sort] == 'active_sponsors_count' %>" href="<%= url_for(request.query_parameters.merge(sort: 'active_sponsors_count', order: 'desc')) %>">Active Sponsors</a></li>
-      <li><a class="dropdown-item <%= 'active' if params[:sort] == 'sponsorships_count' %>" href="<%= url_for(request.query_parameters.merge(sort: 'sponsorships_count', order: 'desc')) %>">Sponsoring</a></li>
+      <li><a class="dropdown-item <%= 'active' if params[:sort] == 'sponsorships_count' %>" href="<%= url_for(request.query_parameters.merge(sort: 'sponsorships_count', order: 'desc')) %>">Total Sponsoring</a></li>
       <li><a class="dropdown-item <%= 'active' if params[:sort] == 'active_sponsorships_count' %>" href="<%= url_for(request.query_parameters.merge(sort: 'active_sponsorships_count', order: 'desc')) %>">Active Sponsoring</a></li>
       <li><a class="dropdown-item <%= 'active' if params[:sort] == 'minimum_sponsorship_amount' %>" href="<%= url_for(request.query_parameters.merge(sort: 'minimum_sponsorship_amount', order: 'desc')) %>">Minumum Sponsorship</a></li>
     </ul>
