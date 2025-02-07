@@ -301,8 +301,6 @@ class Account < ApplicationRecord
         puts "No matching react-partial found."
       end
     end
-
-    return sponsors
   end
 
   def fetch_sponsorships_github_graphql
