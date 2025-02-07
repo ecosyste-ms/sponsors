@@ -1,7 +1,19 @@
 class AccountsController < ApplicationController
   def index
-    scope = Account.all.has_sponsors_listing.order('sponsors_count desc, updated_at DESC')
+    scope = Account.all.has_sponsors_listing
     scope = scope.kind(params[:kind]) if params[:kind].present?
+
+    if params[:sort].present? || params[:order].present?
+      sort = params[:sort].presence || 'active_sponsorships_count'
+      if params[:order] == 'asc'
+        scope = scope.order(Arel.sql(sort).asc.nulls_last)
+      else
+        scope = scope.order(Arel.sql(sort).desc.nulls_last)
+      end
+    else
+      scope = scope.order('sponsors_count desc, updated_at DESC')
+    end
+
     @pagy, @accounts = pagy(scope)
   end
 
@@ -11,8 +23,20 @@ class AccountsController < ApplicationController
   end
 
   def sponsors
-    scope = Account.all.where('sponsorships_count > 0').order('active_sponsorships_count desc, sponsorships_count desc, updated_at DESC')
+    scope = Account.all.where('sponsorships_count > 0')
     scope = scope.kind(params[:kind]) if params[:kind].present?
+
+    if params[:sort].present? || params[:order].present?
+      sort = params[:sort].presence || 'active_sponsorships_count'
+      if params[:order] == 'asc'
+        scope = scope.order(Arel.sql(sort).asc.nulls_last)
+      else
+        scope = scope.order(Arel.sql(sort).desc.nulls_last)
+      end
+    else
+      scope = scope.order('active_sponsorships_count desc, sponsorships_count desc, updated_at DESC')
+    end
+
     @pagy, @accounts = pagy(scope)
   end
 
