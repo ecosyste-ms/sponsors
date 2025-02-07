@@ -92,7 +92,7 @@ class Account < ApplicationRecord
     sync_sponsorships
 
     sync_funder
-    
+
     sync_funder_html
 
     ping_repos
@@ -269,7 +269,6 @@ class Account < ApplicationRecord
     if kind == 'user'
       url = "https://github.com/#{login}?tab=sponsoring"
       # requires pagination 
-
     else
       url = "https://github.com/orgs/#{login}/sponsoring"
 
@@ -285,9 +284,6 @@ class Account < ApplicationRecord
           json_data = script_tag.text.strip
           data = JSON.parse(json_data)
       
-          pp data
-
-
           # Extract sponsorships
           sponsorships = data.dig('props', 'sponsorships') || []
 
