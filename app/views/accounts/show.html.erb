@@ -53,6 +53,9 @@
       <li>
         <strong>Total Sponsors:</strong> <%= number_with_delimiter @account.total_sponsors %>
       </li>
+      <li>
+        <strong>Minimum Sponsorship:</strong> <%= number_to_currency (@account.minimum_sponsorship_amount || 1) %>
+      </li>
     </ul>
 
     <% if @account.sponsor_profile['featured_works'].present? %>

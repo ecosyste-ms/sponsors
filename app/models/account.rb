@@ -154,12 +154,19 @@ class Account < ApplicationRecord
       current_sponsors = total_sponsors_match[1].to_i if total_sponsors_match
     end
 
-    update sponsor_profile: {
-      bio: bio,
-      featured_works: featured_works,
-      current_sponsors: current_sponsors,
-      past_sponsors: past_sponsors
-    }, last_synced_at: Time.now
+    min_sponsorship_div = doc.at('.js-sponsors-custom-amount-message')
+    minimum_sponsorship_amount_or_default = min_sponsorship_div&.attr('data-min-custom-tier-amount')&.to_i || 1
+
+    update({
+      sponsor_profile: {
+        bio: bio,
+        featured_works: featured_works,
+        current_sponsors: current_sponsors,
+        past_sponsors: past_sponsors,
+      }, 
+      minimum_sponsorship_amount: minimum_sponsorship_amount_or_default, 
+      last_synced_at: Time.now 
+    })
   rescue => e
     puts "Error scraping sponsored page for #{login}"
     puts e
