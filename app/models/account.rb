@@ -268,7 +268,7 @@ class Account < ApplicationRecord
     kind = data['kind']
     if kind == 'user'
       url = "https://github.com/#{login}?tab=sponsoring"
-      # requires pagination 
+      # TODO requires pagination 
     else
       url = "https://github.com/orgs/#{login}/sponsoring"
 
@@ -284,7 +284,6 @@ class Account < ApplicationRecord
           json_data = script_tag.text.strip
           data = JSON.parse(json_data)
       
-          # Extract sponsorships
           sponsorships = data.dig('props', 'sponsorships') || []
 
           return sponsorships
@@ -295,9 +294,6 @@ class Account < ApplicationRecord
         puts "No matching react-partial found."
       end
     end
-
-    
-
 
     return sponsors
   end
