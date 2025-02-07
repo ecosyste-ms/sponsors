@@ -261,7 +261,7 @@ class Account < ApplicationRecord
 
   def sync_funder_html
     data = fetch_sponsorships_github_html
-    return unless data.present?
+    return unless data.present? && data.is_a?(Array)
 
     data.each do |sponsor|
       maintainer = Account.find_or_create_by(login: sponsor['sponsorableLogin'].downcase)
@@ -276,6 +276,7 @@ class Account < ApplicationRecord
     if kind == 'user'
       url = "https://github.com/#{login}?tab=sponsoring"
       # TODO requires pagination 
+      return nil
     else
       url = "https://github.com/orgs/#{login}/sponsoring"
 
