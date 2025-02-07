@@ -302,6 +302,10 @@ class Account < ApplicationRecord
         puts "No matching react-partial found."
       end
     end
+  rescue => e
+    puts "Error fetching sponsorships via HTML for #{login}"
+    puts e
+    return nil
   end
 
   def fetch_sponsorships_github_graphql
