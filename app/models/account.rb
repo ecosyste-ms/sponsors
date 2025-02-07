@@ -20,8 +20,6 @@ class Account < ApplicationRecord
   scope :users, -> { where("data->>'kind' = ?", 'user') }
   scope :organizations, -> { where("data->>'kind' = ?", 'organization') }
 
-  before_save :set_sponsors_count
-
   def self.sync_least_recently_synced
     Account.where(last_synced_at: nil).or(Account.where("last_synced_at < ?", 1.day.ago)).order('last_synced_at asc nulls first').limit(1000).each do |account|
       account.sync_async
@@ -94,8 +92,12 @@ class Account < ApplicationRecord
     sync_sponsorships
 
     sync_funder
+    
+    sync_funder_html
 
     ping_repos
+
+    set_sponsors_count
 
     update last_synced_at: Time.now
   end
@@ -242,9 +244,6 @@ class Account < ApplicationRecord
     data = fetch_sponsorships_github_graphql
     return unless data.present?
 
-    # update all existing sponsorships to inactive
-    # sponsorships_as_funder.update_all(status: 'inactive') # disabled for now as github graphql doesn't return correct amount of active sponsorships
-
     data.each do |sponsor|
       maintainer = Account.find_or_create_by(login: sponsor['maintainer']['login'].downcase)
       s = Sponsorship.find_or_create_by(funder: self, maintainer: maintainer)
@@ -253,12 +252,65 @@ class Account < ApplicationRecord
     end
   end
 
+  def sync_funder_html
+    data = fetch_sponsorships_github_html
+    return unless data.present?
+
+    data.each do |sponsor|
+      maintainer = Account.find_or_create_by(login: sponsor['sponsorableLogin'].downcase)
+      s = Sponsorship.find_or_create_by(funder: self, maintainer: maintainer)
+      s.update(status: sponsor['active'] ? 'active' : 'inactive')
+      maintainer.save
+    end
+  end
+
+  def fetch_sponsorships_github_html
+    kind = data['kind']
+    if kind == 'user'
+      url = "https://github.com/#{login}?tab=sponsoring"
+      # requires pagination 
+
+    else
+      url = "https://github.com/orgs/#{login}/sponsoring"
+
+      resp = Faraday.get(url)
+      return unless resp.status == 200
+          
+      doc = Nokogiri::HTML(resp.body)
+      target_partial = doc.at('react-partial[partial-name="your-sponsorships"]')
+      if target_partial
+        script_tag = target_partial.at('script[type="application/json"][data-target="react-partial.embeddedData"]')
+      
+        if script_tag
+          json_data = script_tag.text.strip
+          data = JSON.parse(json_data)
+      
+          pp data
+
+
+          # Extract sponsorships
+          sponsorships = data.dig('props', 'sponsorships') || []
+
+          return sponsorships
+        else
+          puts "No embedded JSON found in the target react-partial."
+        end
+      else
+        puts "No matching react-partial found."
+      end
+    end
+
+    
+
+
+    return sponsors
+  end
+
   def fetch_sponsorships_github_graphql
     sponsors = []
     after_cursor = nil
   
     loop do
-      puts "after_cursor: #{after_cursor}"
       query = <<~GRAPHQL
         query($after: String) {
           #{kind}(login: "#{login}") {
