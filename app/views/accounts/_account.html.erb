@@ -12,11 +12,22 @@
           <% if action_name == 'sponsors'%>
             <%= number_with_delimiter(account.active_sponsorships_count) %> actively sponsoring<br>
             <%= number_with_delimiter(account.sponsorships_count) %> total sponsored<br>
+            <% if params[:sort] == 'sponsors_count' || params[:sort] == 'active_sponsors_count' %>
+              <%= number_with_delimiter(account.active_sponsors_count) %><%= '+' if account.active_sponsors_count == 5000 %> active sponsors<br>
+              <%= number_with_delimiter(account.sponsors_count) %> total sponsors<br>
+            <% end%>
           <% else%>
             <%= number_with_delimiter(account.active_sponsors_count) %><%= '+' if account.active_sponsors_count == 5000 %> active sponsors<br>
             <%= number_with_delimiter(account.sponsors_count) %> total sponsors<br>
+            <% if params[:sort] == 'sponsorships_count' || params[:sort] == 'active_sponsorships_count' %>
+              <%= number_with_delimiter(account.active_sponsorships_count) %> actively sponsoring<br>
+              <%= number_with_delimiter(account.sponsorships_count) %> total sponsored<br>
+            <% end%>
           <% end%>
           <%= number_with_delimiter(account.repositories_count || 0) %> public repositories
+          <% if params[:sort] == 'minimum_sponsorship_amount' %>
+            <br>Minimum sponsorship: $<%= number_with_delimiter(account.minimum_sponsorship_amount || 1) %>
+          <% end%>
         </p>
       </div>
       <div class="flex-shrink-0">
