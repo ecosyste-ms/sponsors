@@ -155,7 +155,7 @@ class Account < ApplicationRecord
     end
 
     min_sponsorship_div = doc.at('.js-sponsors-custom-amount-message')
-    minimum_sponsorship_amount_or_default = min_sponsorship_div&.attr('data-min-custom-tier-amount')&.to_i || 1
+    minimum_sponsorship_amount_or_default = [min_sponsorship_div&.attr('data-min-custom-tier-amount')&.to_i, 1].max
 
     update({
       sponsor_profile: {
