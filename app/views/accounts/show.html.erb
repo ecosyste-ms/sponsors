@@ -113,7 +113,7 @@
   <% if @account.sponsorships_as_maintainer.any? %>
     <h5>Sponsor Breakdown</h5>
     <ul>
-      <% @account.sponsorships_as_maintainer.group_by{|s| s.funder.kind }.each do |kind, sponsorships| %>
+      <% @account.sponsorships_as_maintainer.includes(:funder).group_by{|s| s.funder.kind }.each do |kind, sponsorships| %>
         <li>
           <strong><%= kind.try(:humanize) || 'Unknown' %>:</strong> <%= sponsorships.count %> 
         </li>
