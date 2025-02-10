@@ -1,4 +1,6 @@
 class AccountsController < ApplicationController
+  before_action :ensure_lowercase_id, only: [:show]
+
   def index
     scope = Account.all.has_sponsors_listing
     scope = scope.kind(params[:kind]) if params[:kind].present?
@@ -18,6 +20,7 @@ class AccountsController < ApplicationController
   end
 
   def show
+
     @account = Account.find_by_login(params[:id].downcase)
     raise ActiveRecord::RecordNotFound if @account.nil?
   end

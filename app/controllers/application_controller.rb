@@ -22,4 +22,10 @@ class ApplicationController < ActionController::Base
       '<https://mastodon.social/@ecosystems>; rel="me"',
     ].join(", "))
   end
+
+  def ensure_lowercase_id
+    if params[:id] != params[:id].downcase
+      redirect_to action: action_name, id: params[:id].downcase, status: :moved_permanently
+    end
+  end
 end

@@ -1,4 +1,6 @@
 class Api::V1::AccountsController < Api::V1::ApplicationController
+  before_action :ensure_lowercase_id, only: [:show]
+
   def index
     scope = Account.all.has_sponsors_listing.order('sponsors_count desc, updated_at DESC')
     @pagy, @accounts = pagy(scope)
@@ -6,7 +8,10 @@ class Api::V1::AccountsController < Api::V1::ApplicationController
 
   def show
     @account = Account.find_by_login(params[:id].downcase)
-    raise ActiveRecord::RecordNotFound unless @account
+    if @account.nil?
+      @account = Account.attempt_import_from_repos(params[:id].downcase)
+      raise ActiveRecord::RecordNotFound if @account.nil?
+    end
   end
 
   def sponsors

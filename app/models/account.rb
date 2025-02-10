@@ -68,6 +68,17 @@ class Account < ApplicationRecord
     puts e
   end
 
+  def self.attempt_import_from_repos(login)
+    url = "https://repos.ecosyste.ms/api/v1/hosts/GitHub/owners/#{login}"
+    resp = Faraday.get(url)
+
+    return unless resp.status == 200
+     
+    a = Account.create!(login: login.downcase)
+    a.sync_async
+    a
+  end
+
   def repos_api_url
     "https://repos.ecosyste.ms/api/v1/hosts/GitHub/owners/#{login}"
   end
