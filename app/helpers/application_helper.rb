@@ -7,7 +7,15 @@ module ApplicationHelper
   end
 
   def meta_description
-    @meta_description || 'An open API service aggregating public data about GitHub Sponsors.'
+    @meta_description || app_description
+  end
+
+  def app_name
+    "Sponsors"
+  end
+
+  def app_description
+    'An open API service aggregating public data about GitHub Sponsors.'
   end
 
   def sanitize_user_url(url)
