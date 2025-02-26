@@ -13,7 +13,7 @@ module EcosystemsHelper
         },
         {
           name: "Repositories",
-          url: "https://repos.ecosyste.ms"
+          url: "https://repositories.ecosyste.ms"
         },
         {
           name: "Advisories",
