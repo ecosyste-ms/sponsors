@@ -18,6 +18,9 @@ Rails.application.routes.draw do
       resources :accounts, only: [:index, :show] do
         get 'sponsors', to: 'accounts#account_sponsors'
         get 'sponsorships', to: 'accounts#sponsorships'
+        collection do
+          get 'sponsor_logins', to: 'accounts#sponsor_logins'
+        end
       end
       get 'sponsors', to: 'accounts#sponsors'
     end

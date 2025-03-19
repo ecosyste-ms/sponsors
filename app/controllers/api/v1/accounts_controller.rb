@@ -35,4 +35,9 @@ class Api::V1::AccountsController < Api::V1::ApplicationController
     @pagy, @sponsorships = pagy(scope)
     render 'api/v1/sponsorships/index'
   end
+
+  def sponsor_logins
+    logins = Account.has_sponsors_listing.order('login').pluck(:login)
+    render json: logins
+  end
 end
