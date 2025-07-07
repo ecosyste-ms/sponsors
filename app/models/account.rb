@@ -44,7 +44,9 @@ class Account < ApplicationRecord
   def self.import_from_repos
     url = 'https://repos.ecosyste.ms/api/v1/hosts/GitHub/owners/sponsors_logins'
 
-    resp = Faraday.get(url)
+    resp = Faraday.get(url) do |req|
+      req.headers['User-Agent'] = 'sponsors.ecosyste.ms'
+    end
 
     return unless resp.status == 200
 
@@ -62,7 +64,9 @@ class Account < ApplicationRecord
   end
 
   def ping_repos
-    Faraday.get(repos_api_url + '/ping') 
+    Faraday.get(repos_api_url + '/ping') do |req|
+      req.headers['User-Agent'] = 'sponsors.ecosyste.ms'
+    end 
   rescue => e
     puts "Error pinging repos for #{login}"
     puts e
@@ -70,7 +74,9 @@ class Account < ApplicationRecord
 
   def self.attempt_import_from_repos(login)
     url = "https://repos.ecosyste.ms/api/v1/hosts/GitHub/owners/#{login}"
-    resp = Faraday.get(url)
+    resp = Faraday.get(url) do |req|
+      req.headers['User-Agent'] = 'sponsors.ecosyste.ms'
+    end
 
     return unless resp.status == 200
      
@@ -114,7 +120,9 @@ class Account < ApplicationRecord
   end
 
   def sync
-    resp = Faraday.get(repos_api_url)
+    resp = Faraday.get(repos_api_url) do |req|
+      req.headers['User-Agent'] = 'sponsors.ecosyste.ms'
+    end
 
     return unless resp.status == 200
 

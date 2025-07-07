@@ -108,7 +108,9 @@ class AccountsController < ApplicationController
 
       loop do
         url = "https://packages.ecosyste.ms/api/v1/packages/critical?funding=true&per_page=1000&page=#{page}"
-        response = Faraday.get url
+        response = Faraday.get(url) do |req|
+          req.headers['User-Agent'] = 'sponsors.ecosyste.ms'
+        end
         data = JSON.parse(response.body)
         break if data.empty?
         data.each do |package|
