@@ -395,7 +395,7 @@ DEPENDENCIES
   octokit
   ostruct
   pagy
-  pg (~> 1.5)
+  pg
   pghero
   puma (~> 6.3)
   rack-attack
