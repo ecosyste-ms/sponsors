@@ -21,7 +21,7 @@ class Account < ApplicationRecord
   scope :organizations, -> { where("data->>'kind' = ?", 'organization') }
 
   def self.sync_least_recently_synced
-    Account.where(last_synced_at: nil).or(Account.where("last_synced_at < ?", 1.day.ago)).order('last_synced_at asc nulls first').limit(1000).each do |account|
+    Account.where(last_synced_at: nil).or(Account.where("last_synced_at < ?", 1.day.ago)).order('last_synced_at asc nulls first').limit(2000).each do |account|
       account.sync_async
     end
   end
