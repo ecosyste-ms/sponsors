@@ -4,7 +4,7 @@ ruby file: ".ruby-version"
 
 # Core Rails components
 gem "railties", "~> 8.0.0"
-gem "activerecord", "~> 8.0.0"
+gem "activerecord", "~> 8.0.4"
 gem "actionpack", "~> 8.0.0"
 gem "actionview", "~> 8.0.0"
 gem "activesupport", "~> 8.0.0"
