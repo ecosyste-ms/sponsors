@@ -46,7 +46,45 @@ class Api::V1::AccountsControllerTest < ActionDispatch::IntegrationTest
     get '/api/v1/sponsors'
     assert_response :success
     assert_equal 'application/json', response.media_type
-    
+
+    json = JSON.parse(response.body)
+    assert json.is_a?(Array)
+  end
+
+  test "should filter sponsors by active status in API" do
+    active_sponsor = create(:account, login: 'active-sponsor')
+    inactive_sponsor = create(:account, login: 'inactive-sponsor')
+    maintainer = create(:account, login: 'maintainer')
+
+    create(:sponsorship, funder: active_sponsor, maintainer: maintainer, status: 'active')
+    create(:sponsorship, :inactive, funder: inactive_sponsor, maintainer: maintainer)
+
+    active_sponsor.update(active_sponsorships_count: 1, sponsorships_count: 1)
+    inactive_sponsor.update(active_sponsorships_count: 0, sponsorships_count: 1)
+
+    get '/api/v1/sponsors', params: { active: 'true' }
+    assert_response :success
+    assert_equal 'application/json', response.media_type
+
+    json = JSON.parse(response.body)
+    assert json.is_a?(Array)
+  end
+
+  test "should show all sponsors without active filter in API" do
+    active_sponsor = create(:account, login: 'active-sponsor')
+    inactive_sponsor = create(:account, login: 'inactive-sponsor')
+    maintainer = create(:account, login: 'maintainer')
+
+    create(:sponsorship, funder: active_sponsor, maintainer: maintainer, status: 'active')
+    create(:sponsorship, :inactive, funder: inactive_sponsor, maintainer: maintainer)
+
+    active_sponsor.update(active_sponsorships_count: 1, sponsorships_count: 1)
+    inactive_sponsor.update(active_sponsorships_count: 0, sponsorships_count: 1)
+
+    get '/api/v1/sponsors'
+    assert_response :success
+    assert_equal 'application/json', response.media_type
+
     json = JSON.parse(response.body)
     assert json.is_a?(Array)
   end
@@ -113,9 +151,47 @@ class Api::V1::AccountsControllerTest < ActionDispatch::IntegrationTest
   test "should get index returns array of accounts" do
     get api_v1_accounts_path
     assert_response :success
-    
+
     json = JSON.parse(response.body)
     assert json.is_a?(Array)
     assert json.length >= 0
+  end
+
+  test "should filter maintainers by active status in API" do
+    active_maintainer = create(:account, login: 'active-maintainer-api', has_sponsors_listing: true)
+    inactive_maintainer = create(:account, login: 'inactive-maintainer-api', has_sponsors_listing: true)
+    api_sponsor = create(:account, login: 'api-sponsor-1')
+
+    create(:sponsorship, funder: api_sponsor, maintainer: active_maintainer, status: 'active')
+    create(:sponsorship, :inactive, funder: api_sponsor, maintainer: inactive_maintainer)
+
+    active_maintainer.update(active_sponsors_count: 1, sponsors_count: 1)
+    inactive_maintainer.update(active_sponsors_count: 0, sponsors_count: 1)
+
+    get api_v1_accounts_path(active: 'true')
+    assert_response :success
+    assert_equal 'application/json', response.media_type
+
+    json = JSON.parse(response.body)
+    assert json.is_a?(Array)
+  end
+
+  test "should show all maintainers without active filter in API" do
+    active_maintainer = create(:account, login: 'active-maintainer-api-2', has_sponsors_listing: true)
+    inactive_maintainer = create(:account, login: 'inactive-maintainer-api-2', has_sponsors_listing: true)
+    api_sponsor = create(:account, login: 'api-sponsor-2')
+
+    create(:sponsorship, funder: api_sponsor, maintainer: active_maintainer, status: 'active')
+    create(:sponsorship, :inactive, funder: api_sponsor, maintainer: inactive_maintainer)
+
+    active_maintainer.update(active_sponsors_count: 1, sponsors_count: 1)
+    inactive_maintainer.update(active_sponsors_count: 0, sponsors_count: 1)
+
+    get api_v1_accounts_path
+    assert_response :success
+    assert_equal 'application/json', response.media_type
+
+    json = JSON.parse(response.body)
+    assert json.is_a?(Array)
   end
 end

@@ -2,7 +2,12 @@ class Api::V1::AccountsController < Api::V1::ApplicationController
   before_action :ensure_lowercase_id, only: [:show]
 
   def index
-    scope = Account.all.has_sponsors_listing.order('sponsors_count desc, updated_at DESC')
+    if params[:active] == 'true'
+      scope = Account.all.has_sponsors_listing.where('active_sponsors_count > 0')
+    else
+      scope = Account.all.has_sponsors_listing
+    end
+    scope = scope.order('sponsors_count desc, updated_at DESC')
     @pagy, @accounts = pagy(scope)
   end
 
@@ -15,7 +20,12 @@ class Api::V1::AccountsController < Api::V1::ApplicationController
   end
 
   def sponsors
-    scope = Account.all.where('sponsorships_count > 0').order('active_sponsorships_count desc, sponsorships_count desc, updated_at DESC')
+    if params[:active] == 'true'
+      scope = Account.all.where('active_sponsorships_count > 0')
+    else
+      scope = Account.all.where('sponsorships_count > 0')
+    end
+    scope = scope.order('active_sponsorships_count desc, sponsorships_count desc, updated_at DESC')
     @pagy, @accounts = pagy(scope)
     render :index
   end

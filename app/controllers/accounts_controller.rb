@@ -2,7 +2,11 @@ class AccountsController < ApplicationController
   before_action :ensure_lowercase_id, only: [:show]
 
   def index
-    scope = Account.all.has_sponsors_listing
+    if params[:active] == 'true'
+      scope = Account.all.has_sponsors_listing.where('active_sponsors_count > 0')
+    else
+      scope = Account.all.has_sponsors_listing
+    end
     scope = scope.kind(params[:kind]) if params[:kind].present?
 
     if params[:sort].present? || params[:order].present?
@@ -26,7 +30,11 @@ class AccountsController < ApplicationController
   end
 
   def sponsors
-    scope = Account.all.where('sponsorships_count > 0')
+    if params[:active] == 'true'
+      scope = Account.all.where('active_sponsorships_count > 0')
+    else
+      scope = Account.all.where('sponsorships_count > 0')
+    end
     scope = scope.kind(params[:kind]) if params[:kind].present?
 
     if params[:sort].present? || params[:order].present?

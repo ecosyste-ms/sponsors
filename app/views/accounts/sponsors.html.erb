@@ -20,6 +20,29 @@
       </a>
     </li>
     <%= render 'sort' %>
+    <li class="nav-item ms-2">
+      <div class="dropdown">
+        <button class="btn btn-light dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+          Status
+        </button>
+        <ul class="dropdown-menu">
+          <li><a class="dropdown-item <%= 'active' unless params[:active] == 'true' %>" href="<%= url_for(request.query_parameters.except(:active)) %>">All Sponsors</a></li>
+          <li><a class="dropdown-item <%= 'active' if params[:active] == 'true' %>" href="<%= url_for(request.query_parameters.merge(active: 'true')) %>">Active Only</a></li>
+        </ul>
+      </div>
+    </li>
+    <li class="nav-item ms-2">
+      <div class="dropdown">
+        <button class="btn btn-light dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+          Type
+        </button>
+        <ul class="dropdown-menu">
+          <li><a class="dropdown-item <%= 'active' unless params[:kind].present? %>" href="<%= url_for(request.query_parameters.except(:kind)) %>">All Types</a></li>
+          <li><a class="dropdown-item <%= 'active' if params[:kind] == 'user' %>" href="<%= url_for(request.query_parameters.merge(kind: 'user')) %>">Users</a></li>
+          <li><a class="dropdown-item <%= 'active' if params[:kind] == 'organization' %>" href="<%= url_for(request.query_parameters.merge(kind: 'organization')) %>">Organizations</a></li>
+        </ul>
+      </div>
+    </li>
   </ul>
 
   <%= render @accounts %>

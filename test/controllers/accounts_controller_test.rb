@@ -66,6 +66,36 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  test "should filter sponsors by active status" do
+    active_sponsor = create(:account, login: 'active-sponsor')
+    inactive_sponsor = create(:account, login: 'inactive-sponsor')
+    maintainer = create(:account, login: 'maintainer')
+
+    create(:sponsorship, funder: active_sponsor, maintainer: maintainer, status: 'active')
+    create(:sponsorship, :inactive, funder: inactive_sponsor, maintainer: maintainer)
+
+    active_sponsor.update(active_sponsorships_count: 1, sponsorships_count: 1)
+    inactive_sponsor.update(active_sponsorships_count: 0, sponsorships_count: 1)
+
+    get sponsors_path(active: 'true')
+    assert_response :success
+  end
+
+  test "should show all sponsors without active filter" do
+    active_sponsor = create(:account, login: 'active-sponsor')
+    inactive_sponsor = create(:account, login: 'inactive-sponsor')
+    maintainer = create(:account, login: 'maintainer')
+
+    create(:sponsorship, funder: active_sponsor, maintainer: maintainer, status: 'active')
+    create(:sponsorship, :inactive, funder: inactive_sponsor, maintainer: maintainer)
+
+    active_sponsor.update(active_sponsorships_count: 1, sponsorships_count: 1)
+    inactive_sponsor.update(active_sponsorships_count: 0, sponsorships_count: 1)
+
+    get sponsors_path
+    assert_response :success
+  end
+
   test "should get charts page" do
     WebMock.stub_request(:get, "https://packages.ecosyste.ms/api/v1/packages/critical")
       .with(query: hash_including({}))
@@ -85,9 +115,39 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
   test "index should only show accounts with sponsors listing" do
     get accounts_path
     assert_response :success
-    
+
     # Should include accounts with sponsors listing
     assert_select 'body', text: /#{@account.login}/
     assert_select 'body', text: /#{@account_with_sponsors.login}/
+  end
+
+  test "should filter maintainers by active status" do
+    active_maintainer = create(:account, login: 'active-maintainer', has_sponsors_listing: true)
+    inactive_maintainer = create(:account, login: 'inactive-maintainer', has_sponsors_listing: true)
+    sponsor = create(:account, login: 'sponsor')
+
+    create(:sponsorship, funder: sponsor, maintainer: active_maintainer, status: 'active')
+    create(:sponsorship, :inactive, funder: sponsor, maintainer: inactive_maintainer)
+
+    active_maintainer.update(active_sponsors_count: 1, sponsors_count: 1)
+    inactive_maintainer.update(active_sponsors_count: 0, sponsors_count: 1)
+
+    get accounts_path(active: 'true')
+    assert_response :success
+  end
+
+  test "should show all maintainers without active filter" do
+    active_maintainer = create(:account, login: 'active-maintainer', has_sponsors_listing: true)
+    inactive_maintainer = create(:account, login: 'inactive-maintainer', has_sponsors_listing: true)
+    sponsor = create(:account, login: 'sponsor')
+
+    create(:sponsorship, funder: sponsor, maintainer: active_maintainer, status: 'active')
+    create(:sponsorship, :inactive, funder: sponsor, maintainer: inactive_maintainer)
+
+    active_maintainer.update(active_sponsors_count: 1, sponsors_count: 1)
+    inactive_maintainer.update(active_sponsors_count: 0, sponsors_count: 1)
+
+    get accounts_path
+    assert_response :success
   end
 end
