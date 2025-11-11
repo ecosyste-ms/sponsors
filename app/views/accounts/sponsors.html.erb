@@ -1,4 +1,10 @@
-<% @meta_title = "Sponsors" %>
+<%
+  title_parts = []
+  title_parts << (params[:active] == 'true' ? 'Active' : nil)
+  title_parts << (params[:kind] == 'user' ? 'User' : params[:kind] == 'organization' ? 'Organization' : nil)
+  title_parts << 'Sponsors'
+  @meta_title = title_parts.compact.join(' ')
+%>
 <% @meta_description = "Accounts that have sponsored maintainers on GitHub Sponsors" %>
 
 <div class="container-sm">

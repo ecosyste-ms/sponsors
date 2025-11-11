@@ -1,4 +1,10 @@
-<% @meta_title = "Maintainers" %>
+<%
+  title_parts = []
+  title_parts << (params[:active] == 'true' ? 'Active' : nil)
+  title_parts << (params[:kind] == 'user' ? 'User' : params[:kind] == 'organization' ? 'Organization' : nil)
+  title_parts << 'Maintainers'
+  @meta_title = title_parts.compact.join(' ')
+%>
 
 <div class="container-sm">
   <div class="row alert alert-info">

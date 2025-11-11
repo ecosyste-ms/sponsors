@@ -150,4 +150,40 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
     get accounts_path
     assert_response :success
   end
+
+  test "page title should reflect active filter for maintainers" do
+    get accounts_path(active: 'true')
+    assert_response :success
+    assert_select 'title', /Active Maintainers/
+  end
+
+  test "page title should reflect kind filter for maintainers" do
+    get accounts_path(kind: 'organization')
+    assert_response :success
+    assert_select 'title', /Organization Maintainers/
+  end
+
+  test "page title should reflect combined filters for maintainers" do
+    get accounts_path(active: 'true', kind: 'user')
+    assert_response :success
+    assert_select 'title', /Active User Maintainers/
+  end
+
+  test "page title should reflect active filter for sponsors" do
+    get sponsors_path(active: 'true')
+    assert_response :success
+    assert_select 'title', /Active Sponsors/
+  end
+
+  test "page title should reflect kind filter for sponsors" do
+    get sponsors_path(kind: 'organization')
+    assert_response :success
+    assert_select 'title', /Organization Sponsors/
+  end
+
+  test "page title should reflect combined filters for sponsors" do
+    get sponsors_path(active: 'true', kind: 'user')
+    assert_response :success
+    assert_select 'title', /Active User Sponsors/
+  end
 end
