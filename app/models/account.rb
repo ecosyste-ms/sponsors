@@ -1,4 +1,16 @@
 class Account < ApplicationRecord
+  def self.sortable_columns
+    {
+      'active_sponsorships_count' => 'active_sponsorships_count',
+      'sponsorships_count' => 'sponsorships_count',
+      'sponsors_count' => 'sponsors_count',
+      'active_sponsors_count' => 'active_sponsors_count',
+      'login' => 'login',
+      'created_at' => 'created_at',
+      'updated_at' => 'updated_at',
+    }
+  end
+
   validates :login, presence: true
 
   has_many :sponsorships_as_funder, class_name: "Sponsorship", foreign_key: :funder_id

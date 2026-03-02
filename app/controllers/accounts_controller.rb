@@ -10,11 +10,11 @@ class AccountsController < ApplicationController
     scope = scope.kind(params[:kind]) if params[:kind].present?
 
     if params[:sort].present? || params[:order].present?
-      sort = params[:sort].presence || 'active_sponsorships_count'
+      sort = sanitize_sort(Account.sortable_columns, default: 'active_sponsorships_count')
       if params[:order] == 'asc'
-        scope = scope.order(Arel.sql(sort).asc.nulls_last)
+        scope = scope.order(sort.asc.nulls_last)
       else
-        scope = scope.order(Arel.sql(sort).desc.nulls_last)
+        scope = scope.order(sort.desc.nulls_last)
       end
     else
       scope = scope.order('sponsors_count desc, updated_at DESC')
@@ -38,11 +38,11 @@ class AccountsController < ApplicationController
     scope = scope.kind(params[:kind]) if params[:kind].present?
 
     if params[:sort].present? || params[:order].present?
-      sort = params[:sort].presence || 'active_sponsorships_count'
+      sort = sanitize_sort(Account.sortable_columns, default: 'active_sponsorships_count')
       if params[:order] == 'asc'
-        scope = scope.order(Arel.sql(sort).asc.nulls_last)
+        scope = scope.order(sort.asc.nulls_last)
       else
-        scope = scope.order(Arel.sql(sort).desc.nulls_last)
+        scope = scope.order(sort.desc.nulls_last)
       end
     else
       scope = scope.order('active_sponsorships_count desc, sponsorships_count desc, updated_at DESC')
