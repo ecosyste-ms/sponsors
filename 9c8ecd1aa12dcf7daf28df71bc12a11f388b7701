@@ -1,0 +1,29 @@
+config/initializers/sidekiq.rb
+  3c205fadda166955 1-10
+app.json
+  3c205fadda166955 10-13
+test/tasks/sidekiq_unique_jobs_rake_test.rb
+  3c205fadda166955 1-36
+lib/tasks/sidekiq.rake
+  3c205fadda166955 1-53
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.8",
+  "base_commit_sha": "9c8ecd1aa12dcf7daf28df71bc12a11f388b7701",
+  "prompts": {
+    "3c205fadda166955": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8db4cc5a-1433-41b1-adab-e508bceaccf6",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Andrew Nesbitt <andrewnez@gmail.com>",
+      "messages": [],
+      "total_additions": 103,
+      "total_deletions": 0,
+      "accepted_lines": 103,
+      "overriden_lines": 0
+    }
+  }
+}
