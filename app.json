@@ -7,6 +7,10 @@
     {
       "command": "bundle exec rake accounts:import_from_repos",
       "schedule": "0 0 * * *"
+    },
+    {
+      "command": "bundle exec rake sidekiq:unique_jobs:clear",
+      "schedule": "0 0 * * 0"
     }
   ]
 }
