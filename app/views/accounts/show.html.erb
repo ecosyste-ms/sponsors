@@ -126,7 +126,7 @@
     <h5>Sponsorship Cluster</h5>
     <div class="d-flex flex-wrap gap-2 mb-3">
       <% (@cluster - [@account.login]).each do |login| %>
-        <%= render 'account_chip', login: login %>
+        <%= render 'account_avatar', login: login %>
       <% end %>
     </div>
   <% end %>

@@ -47,10 +47,9 @@
       <div class="col">
         <div class="card h-100">
           <div class="card-body">
-            <h5 class="card-title"><%= component.size %> accounts</h5>
             <div class="d-flex flex-wrap gap-2">
               <% component.each do |login| %>
-                <%= render 'account_chip', login: login %>
+                <%= render 'account_avatar', login: login %>
               <% end %>
             </div>
           </div>
