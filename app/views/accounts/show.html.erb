@@ -115,9 +115,16 @@
 
   <% if @mutual_accounts.present? %>
     <h5>Sponsoring Each Other</h5>
-    <div class="d-flex flex-wrap gap-2 mb-3">
+    <div class="row row-cols-6 g-2 mb-3">
       <% @mutual_accounts.each do |mutual| %>
-        <%= render 'account_chip', login: mutual.login %>
+        <div class="col">
+          <div class="card text-center p-2">
+            <%= link_to account_path(mutual.login), title: mutual.login do %>
+              <img src="<%= mutual.avatar_url %>" alt="<%= mutual.login %>" class="rounded-circle" height="50" width="50">
+              <small class="d-block mt-2"><%= mutual.login %></small>
+            <% end %>
+          </div>
+        </div>
       <% end %>
     </div>
   <% end %>
@@ -126,7 +133,7 @@
     <h5>Sponsorship Cluster</h5>
     <div class="d-flex flex-wrap gap-2 mb-3">
       <% (@cluster - [@account.login]).each do |login| %>
-        <%= render 'account_avatar', login: login %>
+        <%= render 'account_avatar', login: login, size: 50, shape: 'rounded-circle' %>
       <% end %>
     </div>
   <% end %>
