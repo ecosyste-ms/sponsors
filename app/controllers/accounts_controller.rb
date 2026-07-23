@@ -51,6 +51,13 @@ class AccountsController < ApplicationController
     @pagy, @accounts = pagy(scope)
   end
 
+  def reciprocity
+    @mutual_pairs = SponsorshipGraph.mutual_pairs
+    @mutual_pair_count_ever = SponsorshipGraph.mutual_pair_count(active_only: false)
+    @triangles = SponsorshipGraph.triangles
+    @components = SponsorshipGraph.strongly_connected_components.select { |c| c.size > 2 }
+  end
+
   def charts
     @accounts_by_total_sponsorships = Account.all
       .has_sponsors_listing

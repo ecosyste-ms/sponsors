@@ -1,0 +1,95 @@
+<% @meta_title = 'Reciprocal Sponsorships' %>
+
+<div class="container-sm">
+  <ul class="nav nav-tabs my-3">
+    <li class="nav-item">
+      <a class="nav-link" href="<%= root_path %>">
+        Maintainers
+        <span class="badge bg-secondary rounded-pill">
+          <%= number_with_delimiter Account.has_sponsors_listing.count %>
+        </span>
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="<%= sponsors_path %>">
+        Sponsors
+        <span class="badge bg-secondary rounded-pill">
+          <%= number_with_delimiter Account.with_sponsorships.count %>
+        </span>
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link active" href="<%= reciprocity_path %>">
+        Reciprocity
+        <span class="badge bg-secondary rounded-pill">
+          <%= number_with_delimiter @mutual_pairs.size %>
+        </span>
+      </a>
+    </li>
+  </ul>
+
+  <div class="row alert alert-info">
+    <div class="col-md-6">
+      <p class="mb-1"><strong>Active Mutual Pairs:</strong> <%= number_with_delimiter(@mutual_pairs.size) %></p>
+      <p class="mb-1"><strong>Total Mutual Pairs:</strong> <%= number_with_delimiter(@mutual_pair_count_ever) %></p>
+      <p class="mb-1"><strong>Accounts Sponsoring Each Other:</strong> <%= number_with_delimiter(@mutual_pairs.flatten.uniq.size) %></p>
+    </div>
+    <div class="col-md-6">
+      <p class="mb-1"><strong>Sponsorship Triangles:</strong> <%= number_with_delimiter(@triangles.size) %></p>
+      <p class="mb-1"><strong>Sponsorship Clusters:</strong> <%= number_with_delimiter(@components.size) %></p>
+      <p class="mb-1"><strong>Largest Cluster:</strong> <%= number_with_delimiter(@components.first ? @components.first.size : 0) %> accounts</p>
+    </div>
+  </div>
+
+  <h2 class="mt-4">Sponsorship clusters</h2>
+  <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3 mb-4">
+    <% @components.each do |component| %>
+      <div class="col">
+        <div class="card h-100">
+          <div class="card-body">
+            <h5 class="card-title"><%= component.size %> accounts</h5>
+            <div class="d-flex flex-wrap gap-2">
+              <% component.each do |login| %>
+                <%= render 'account_chip', login: login %>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+
+  <h2 class="mt-4">Accounts sponsoring each other</h2>
+  <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3 mb-4">
+    <% @mutual_pairs.each do |a, b| %>
+      <div class="col">
+        <div class="card h-100">
+          <div class="card-body py-2 d-flex align-items-center flex-wrap gap-2">
+            <%= render 'account_chip', login: a %>
+            <span class="text-muted">&harr;</span>
+            <%= render 'account_chip', login: b %>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+
+  <h2 class="mt-4">Sponsorship triangles</h2>
+  <div class="row row-cols-1 row-cols-lg-2 g-3 mb-4">
+    <% @triangles.each do |a, b, c| %>
+      <div class="col">
+        <div class="card h-100">
+          <div class="card-body py-2 d-flex align-items-center flex-wrap gap-2">
+            <%= render 'account_chip', login: a %>
+            <span class="text-muted">&rarr;</span>
+            <%= render 'account_chip', login: b %>
+            <span class="text-muted">&rarr;</span>
+            <%= render 'account_chip', login: c %>
+            <span class="text-muted">&rarr;</span>
+            <%= render 'account_chip', login: a %>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>

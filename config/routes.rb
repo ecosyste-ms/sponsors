@@ -32,6 +32,8 @@ Rails.application.routes.draw do
 
   get 'sponsors', to: 'accounts#sponsors', as: :sponsors
   
+  get 'reciprocity', to: 'accounts#reciprocity', as: :reciprocity
+
   get 'charts', to: 'accounts#charts', as: :charts
   get 'sponsor_charts', to: 'accounts#sponsor_charts', as: :sponsor_charts
 

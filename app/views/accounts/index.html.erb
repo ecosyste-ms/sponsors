@@ -41,6 +41,14 @@
         </span>
       </a>
     </li>
+    <li class="nav-item">
+      <a class="nav-link" href="<%= reciprocity_path %>">
+        Reciprocity
+        <span class="badge bg-secondary rounded-pill">
+          <%= number_with_delimiter SponsorshipGraph.mutual_pair_count %>
+        </span>
+      </a>
+    </li>
     <%= render 'sort' %>
     <li class="nav-item ms-2">
       <div class="dropdown">

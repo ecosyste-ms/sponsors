@@ -186,4 +186,27 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select 'title', /Active User Sponsors/
   end
+
+  test "should get reciprocity page" do
+    alice = create(:account, login: 'alice')
+    bob = create(:account, login: 'bob')
+    carol = create(:account, login: 'carol')
+    create(:sponsorship, funder: alice, maintainer: bob)
+    create(:sponsorship, funder: bob, maintainer: alice)
+    create(:sponsorship, funder: alice, maintainer: carol)
+    create(:sponsorship, funder: carol, maintainer: bob)
+
+    get reciprocity_path
+    assert_response :success
+    assert_select 'title', /Reciprocal Sponsorships/
+    assert_select 'a[href=?]', account_path('alice')
+    assert_select 'a[href=?]', account_path('bob')
+    assert_select 'ul.nav-tabs a.nav-link.active', 1
+    assert_select 'ul.nav-tabs a.nav-link.active[href=?]', reciprocity_path
+  end
+
+  test "reciprocity page renders with no reciprocal sponsorships" do
+    get reciprocity_path
+    assert_response :success
+  end
 end
