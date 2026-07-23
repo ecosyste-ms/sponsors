@@ -48,13 +48,28 @@ class SponsorshipGraph
     strongly_connected_components.find { |component| component.size > 2 && component.include?(account.login) }
   end
 
-  def self.strongly_connected_components
+  def self.active_edges
     funder_ids = Sponsorship.active.distinct.pluck(:funder_id)
     maintainer_ids = Sponsorship.active.distinct.pluck(:maintainer_id)
     ids = funder_ids & maintainer_ids
+    Sponsorship.active.where(funder_id: ids, maintainer_id: ids).pluck(:funder_id, :maintainer_id)
+  end
 
+  def self.loop_sponsorship_count
+    edges = active_edges
     graph = Hash.new { |h, k| h[k] = [] }
-    Sponsorship.active.where(funder_id: ids, maintainer_id: ids).pluck(:funder_id, :maintainer_id).each do |funder_id, maintainer_id|
+    edges.each { |funder_id, maintainer_id| graph[funder_id] << maintainer_id }
+
+    component_of = {}
+    tarjan(graph).each do |component|
+      component.each { |id| component_of[id] = component } if component.size > 1
+    end
+    edges.count { |funder_id, maintainer_id| component_of[funder_id] && component_of[funder_id].equal?(component_of[maintainer_id]) }
+  end
+
+  def self.strongly_connected_components
+    graph = Hash.new { |h, k| h[k] = [] }
+    active_edges.each do |funder_id, maintainer_id|
       graph[funder_id] << maintainer_id
     end
 

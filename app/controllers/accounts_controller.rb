@@ -61,6 +61,8 @@ class AccountsController < ApplicationController
     @mutual_pair_count_ever = SponsorshipGraph.mutual_pair_count(active_only: false)
     @triangles = SponsorshipGraph.triangles
     @components = SponsorshipGraph.strongly_connected_components.select { |c| c.size > 2 }
+    @loop_sponsorship_count = SponsorshipGraph.loop_sponsorship_count
+    @active_sponsorship_count = Sponsorship.active.count
   end
 
   def charts

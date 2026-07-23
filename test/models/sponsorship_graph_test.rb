@@ -105,6 +105,31 @@ class SponsorshipGraphTest < ActiveSupport::TestCase
     assert_nil SponsorshipGraph.cluster_for(carol)
   end
 
+  test "loop_sponsorship_count counts active sponsorships inside a cycle" do
+    alice = account("alice")
+    bob = account("bob")
+    carol = account("carol")
+    dave = account("dave")
+    create(:sponsorship, funder: alice, maintainer: bob)
+    create(:sponsorship, funder: bob, maintainer: carol)
+    create(:sponsorship, funder: carol, maintainer: alice)
+    # one-way edges, not in any loop
+    eve = account("eve")
+    create(:sponsorship, funder: alice, maintainer: dave)
+    create(:sponsorship, funder: eve, maintainer: bob)
+
+    assert_equal 3, SponsorshipGraph.loop_sponsorship_count
+  end
+
+  test "loop_sponsorship_count ignores inactive sponsorships" do
+    alice = account("alice")
+    bob = account("bob")
+    create(:sponsorship, funder: alice, maintainer: bob)
+    create(:sponsorship, :inactive, funder: bob, maintainer: alice)
+
+    assert_equal 0, SponsorshipGraph.loop_sponsorship_count
+  end
+
   test "strongly_connected_components ignores inactive cycles" do
     alice = account("alice")
     bob = account("bob")

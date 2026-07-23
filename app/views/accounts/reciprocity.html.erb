@@ -33,6 +33,7 @@
       <p class="mb-1"><strong>Active Mutual Pairs:</strong> <%= number_with_delimiter(@mutual_pairs.size) %></p>
       <p class="mb-1"><strong>Total Mutual Pairs:</strong> <%= number_with_delimiter(@mutual_pair_count_ever) %></p>
       <p class="mb-1"><strong>Accounts Sponsoring Each Other:</strong> <%= number_with_delimiter(@mutual_pairs.flatten.uniq.size) %></p>
+      <p class="mb-1"><strong>Sponsorships in a Loop:</strong> <%= number_with_delimiter(@loop_sponsorship_count) %> (<%= number_to_percentage(@active_sponsorship_count.zero? ? 0 : 100.0 * @loop_sponsorship_count / @active_sponsorship_count, precision: 2) %> of <%= number_with_delimiter(@active_sponsorship_count) %> active)</p>
     </div>
     <div class="col-md-6">
       <p class="mb-1"><strong>Sponsorship Triangles:</strong> <%= number_with_delimiter(@triangles.size) %></p>
