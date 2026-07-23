@@ -44,6 +44,10 @@ class SponsorshipGraph
     SQL
   end
 
+  def self.cluster_for(account)
+    strongly_connected_components.find { |component| component.size > 2 && component.include?(account.login) }
+  end
+
   def self.strongly_connected_components
     funder_ids = Sponsorship.active.distinct.pluck(:funder_id)
     maintainer_ids = Sponsorship.active.distinct.pluck(:maintainer_id)

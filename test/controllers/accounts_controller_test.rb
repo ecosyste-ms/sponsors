@@ -209,4 +209,19 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
     get reciprocity_path
     assert_response :success
   end
+
+  test "show page lists mutual accounts and cluster" do
+    alice = create(:account, login: 'alice')
+    bob = create(:account, login: 'bob')
+    carol = create(:account, login: 'carol')
+    create(:sponsorship, funder: alice, maintainer: bob)
+    create(:sponsorship, funder: bob, maintainer: alice)
+    create(:sponsorship, funder: bob, maintainer: carol)
+    create(:sponsorship, funder: carol, maintainer: alice)
+
+    get account_path(alice)
+    assert_response :success
+    assert_select 'h5', 'Sponsoring Each Other'
+    assert_select 'h5', 'Sponsorship Cluster'
+  end
 end

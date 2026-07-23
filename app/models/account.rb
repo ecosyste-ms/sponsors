@@ -38,6 +38,12 @@ class Account < ApplicationRecord
     end
   end
 
+  def mutual_accounts
+    Account.where(id: sponsorships_as_funder.active.select(:maintainer_id))
+           .where(id: sponsorships_as_maintainer.active.select(:funder_id))
+           .order(:login)
+  end
+
   def to_s
     login
   end

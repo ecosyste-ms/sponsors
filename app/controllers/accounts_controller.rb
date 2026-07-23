@@ -27,6 +27,11 @@ class AccountsController < ApplicationController
 
     @account = Account.find_by_login(params[:id].downcase)
     raise ActiveRecord::RecordNotFound if @account.nil?
+
+    if @account.active_sponsorships_count > 0 && @account.active_sponsors_count > 0
+      @mutual_accounts = @account.mutual_accounts
+      @cluster = SponsorshipGraph.cluster_for(@account)
+    end
   end
 
   def sponsors

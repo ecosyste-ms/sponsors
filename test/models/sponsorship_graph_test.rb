@@ -83,6 +83,28 @@ class SponsorshipGraphTest < ActiveSupport::TestCase
     assert_equal [["alice", "bob", "carol"]], SponsorshipGraph.strongly_connected_components
   end
 
+  test "cluster_for returns the account's cluster of three or more" do
+    alice = account("alice")
+    bob = account("bob")
+    carol = account("carol")
+    create(:sponsorship, funder: alice, maintainer: bob)
+    create(:sponsorship, funder: bob, maintainer: carol)
+    create(:sponsorship, funder: carol, maintainer: alice)
+
+    assert_equal ["alice", "bob", "carol"], SponsorshipGraph.cluster_for(alice)
+  end
+
+  test "cluster_for returns nil for a mutual pair or unclustered account" do
+    alice = account("alice")
+    bob = account("bob")
+    carol = account("carol")
+    create(:sponsorship, funder: alice, maintainer: bob)
+    create(:sponsorship, funder: bob, maintainer: alice)
+
+    assert_nil SponsorshipGraph.cluster_for(alice)
+    assert_nil SponsorshipGraph.cluster_for(carol)
+  end
+
   test "strongly_connected_components ignores inactive cycles" do
     alice = account("alice")
     bob = account("bob")
