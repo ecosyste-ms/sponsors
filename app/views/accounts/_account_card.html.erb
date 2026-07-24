@@ -1,0 +1,8 @@
+<div class="col">
+  <div class="card text-center p-2 h-100">
+    <%= link_to account_path(login), title: login do %>
+      <img src="https://avatars.githubusercontent.com/<%= login %>" alt="<%= login %>" class="rounded-circle" height="50" width="50">
+      <small class="d-block mt-2 text-truncate"><%= login %></small>
+    <% end %>
+  </div>
+</div>

@@ -59,7 +59,7 @@
     </ul>
 
     <% if @account.sponsor_profile['featured_works'].present? %>
-      <h2>Featured Works</h2>
+      <h5>Featured Works</h5>
       <div class='row'>
         <% @account.sponsor_profile['featured_works'].each do |work| %>
           <div class='col-md-4 mb-3'>
@@ -81,50 +81,27 @@
     <% if @account.sponsorships_as_maintainer.any? %>
       <h5>Active Sponsors</h5>
 
-      <div class="row row-cols-6 g-2 mb-3">
+      <div class="row row-cols-3 row-cols-sm-4 row-cols-md-6 g-2 mb-3">
         <% @account.sponsorships_as_maintainer.active.includes(:funder).each do |sponsorship| %>
-          <div class="col">
-            <div class="card text-center p-2">
-              <%= link_to account_path(sponsorship.funder.login), title: sponsorship.funder.login do %>
-                <img src="<%= sponsorship.funder.avatar_url %>" alt="<%= sponsorship.funder.login %>" class="img-fluid rounded-circle" style="max-width: 50px; height: auto;">
-                <small class="d-block mt-2"><%= sponsorship.funder.login %></small>
-              <% end %>
-            </div>
-          </div>
+          <%= render 'account_card', login: sponsorship.funder.login %>
         <% end %>
       </div>
 
       <h5>Past Sponsors</h5>
 
-      <div class="row row-cols-6 g-2 mb-3">
+      <div class="row row-cols-3 row-cols-sm-4 row-cols-md-6 g-2 mb-3">
         <% @account.sponsorships_as_maintainer.inactive.includes(:funder).each do |sponsorship| %>
-          <div class="col">
-            <div class="card text-center p-2">
-              <%= link_to account_path(sponsorship.funder.login), title: sponsorship.funder.login do %>
-                <img src="<%= sponsorship.funder.avatar_url %>" alt="<%= sponsorship.funder.login %>" class="img-fluid rounded-circle" style="max-width: 50px; height: auto;">
-                <small class="d-block mt-2"><%= sponsorship.funder.login %></small>
-              <% end %>
-            </div>
-          </div>
+          <%= render 'account_card', login: sponsorship.funder.login %>
         <% end %>
       </div>
-
-
     <% end %>
   <% end %>
 
   <% if @mutual_accounts.present? %>
     <h5>Sponsoring Each Other</h5>
-    <div class="row row-cols-6 g-2 mb-3">
+    <div class="row row-cols-3 row-cols-sm-4 row-cols-md-6 g-2 mb-3">
       <% @mutual_accounts.each do |mutual| %>
-        <div class="col">
-          <div class="card text-center p-2">
-            <%= link_to account_path(mutual.login), title: mutual.login do %>
-              <img src="<%= mutual.avatar_url %>" alt="<%= mutual.login %>" class="rounded-circle" height="50" width="50">
-              <small class="d-block mt-2"><%= mutual.login %></small>
-            <% end %>
-          </div>
-        </div>
+        <%= render 'account_card', login: mutual.login %>
       <% end %>
     </div>
   <% end %>
@@ -154,16 +131,9 @@
     <% if @account.sponsorships_as_funder.active.includes(:maintainer).length > 0 %>
       <h5>Active Sponsorships</h5>
 
-      <div class="row row-cols-6 g-2 mb-3">
+      <div class="row row-cols-3 row-cols-sm-4 row-cols-md-6 g-2 mb-3">
         <% @account.sponsorships_as_funder.active.includes(:maintainer).each do |sponsorship| %>
-          <div class="col">
-            <div class="card text-center p-2">
-              <%= link_to account_path(sponsorship.maintainer.login), title: sponsorship.maintainer.login do %>
-                <img src="<%= sponsorship.maintainer.avatar_url %>" alt="<%= sponsorship.maintainer.login %>" class="img-fluid rounded-circle" style="max-width: 50px; height: auto;">
-                <small class="d-block mt-2"><%= sponsorship.maintainer.login %></small>
-              <% end %>
-            </div>
-          </div>
+          <%= render 'account_card', login: sponsorship.maintainer.login %>
         <% end %>
       </div>
     <% end %>
@@ -171,16 +141,9 @@
     <% if @account.sponsorships_as_funder.inactive.includes(:maintainer).length > 0 %>
       <h5>Past Sponsorships</h5>
 
-      <div class="row row-cols-6 g-2 mb-3">
+      <div class="row row-cols-3 row-cols-sm-4 row-cols-md-6 g-2 mb-3">
         <% @account.sponsorships_as_funder.inactive.includes(:maintainer).each do |sponsorship| %>
-          <div class="col">
-            <div class="card text-center p-2">
-              <%= link_to account_path(sponsorship.maintainer.login), title: sponsorship.maintainer.login do %>
-                <img src="<%= sponsorship.maintainer.avatar_url %>" alt="<%= sponsorship.maintainer.login %>" class="img-fluid rounded-circle" style="max-width: 50px; height: auto;">
-                <small class="d-block mt-2"><%= sponsorship.maintainer.login %></small>
-              <% end %>
-            </div>
-          </div>
+          <%= render 'account_card', login: sponsorship.maintainer.login %>
         <% end %>
       </div>
     <% end %>
