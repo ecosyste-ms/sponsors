@@ -1,0 +1,26 @@
+<% active = local_assigns[:active] %>
+<% reciprocity_count = local_assigns[:reciprocity_count] || SponsorshipGraph.mutual_pair_count %>
+<li class="nav-item">
+  <a class="nav-link <%= 'active' if active == 'maintainers' %>" href="<%= root_path %>">
+    Maintainers
+    <span class="badge bg-secondary rounded-pill">
+      <%= number_with_delimiter Account.has_sponsors_listing.count %>
+    </span>
+  </a>
+</li>
+<li class="nav-item">
+  <a class="nav-link <%= 'active' if active == 'sponsors' %>" href="<%= sponsors_path %>">
+    Sponsors
+    <span class="badge bg-secondary rounded-pill">
+      <%= number_with_delimiter Account.with_sponsorships.count %>
+    </span>
+  </a>
+</li>
+<li class="nav-item">
+  <a class="nav-link <%= 'active' if active == 'reciprocity' %>" href="<%= reciprocity_path %>">
+    Reciprocity
+    <span class="badge bg-secondary rounded-pill">
+      <%= number_with_delimiter reciprocity_count %>
+    </span>
+  </a>
+</li>

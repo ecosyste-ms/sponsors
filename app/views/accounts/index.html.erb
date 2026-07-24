@@ -25,30 +25,7 @@
   </div>
 
   <ul class="nav nav-tabs my-3">
-    <li class="nav-item">
-      <a class="nav-link active" href="<%= root_path %>">
-        Maintainers
-        <span class="badge bg-secondary rounded-pill">
-          <%= number_with_delimiter Account.has_sponsors_listing.count %>
-        </span>
-      </a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link " href="<%= sponsors_path %>">
-        Sponsors
-        <span class="badge bg-secondary rounded-pill">
-          <%= number_with_delimiter Account.with_sponsorships.count %>
-        </span>
-      </a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link" href="<%= reciprocity_path %>">
-        Reciprocity
-        <span class="badge bg-secondary rounded-pill">
-          <%= number_with_delimiter SponsorshipGraph.mutual_pair_count %>
-        </span>
-      </a>
-    </li>
+    <%= render 'tabs', active: 'maintainers' %>
     <%= render 'sort' %>
     <li class="nav-item ms-2">
       <div class="dropdown">

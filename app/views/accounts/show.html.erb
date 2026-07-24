@@ -2,15 +2,21 @@
 <% @meta_description = "#{@account.login} on GitHub Sponsors, showing their profile, sponsorships, and featured works" %>
 
 <div class="container-sm">
-  <h1>
-    <%= link_to @account.login, @account.html_url, target: :_blank %>
-  </h1>
+  <ul class="nav nav-tabs my-3">
+    <%= render 'tabs' %>
+  </ul>
 
-  <p class='text-muted'>
-    <small>
-    <%= link_to 'View JSON Representation', api_v1_account_path(@account), target: :_blank %>
-    </small>
-  </p>
+  <div class="d-flex align-items-center my-3">
+    <img src="<%= @account.avatar_url %>" alt="<%= @account.login %>" class="rounded-circle me-3" height="64" width="64">
+    <div>
+      <h1 class="h3 mb-0">
+        <%= link_to @account.login, @account.html_url, target: :_blank, class: 'text-decoration-hover' %>
+        <% if @account.kind %>
+          <small class="text-muted fs-6"><%= @account.kind %></small>
+        <% end %>
+      </h1>
+    </div>
+  </div>
 
   <% if @account.data.present? %>
     <% if @account.description.present? %>
@@ -37,7 +43,7 @@
   <% end %>
 
   <% if @account.has_sponsors_listing && @account.sponsor_profile.present? %>
-    <h2>GitHub Sponsors Profile</h2>
+    <h2 class="h4 mt-4">GitHub Sponsors Profile</h2>
 
     <p>
       <%= simple_format @account.sponsor_profile['bio'] %>
@@ -59,7 +65,7 @@
     </ul>
 
     <% if @account.sponsor_profile['featured_works'].present? %>
-      <h5>Featured Works</h5>
+      <h5 class="mt-4">Featured Works</h5>
       <div class='row'>
         <% @account.sponsor_profile['featured_works'].each do |work| %>
           <div class='col-md-4 mb-3'>
@@ -78,16 +84,18 @@
       </div>
     <% end %>  
 
-    <% if @account.sponsorships_as_maintainer.any? %>
-      <h5>Active Sponsors</h5>
+    <% if @account.sponsorships_as_maintainer.active.any? %>
+      <h5 class="mt-4">Active Sponsors</h5>
 
       <div class="row row-cols-3 row-cols-sm-4 row-cols-md-6 g-2 mb-3">
         <% @account.sponsorships_as_maintainer.active.includes(:funder).each do |sponsorship| %>
           <%= render 'account_card', login: sponsorship.funder.login %>
         <% end %>
       </div>
+    <% end %>
 
-      <h5>Past Sponsors</h5>
+    <% if @account.sponsorships_as_maintainer.inactive.any? %>
+      <h5 class="mt-4">Past Sponsors</h5>
 
       <div class="row row-cols-3 row-cols-sm-4 row-cols-md-6 g-2 mb-3">
         <% @account.sponsorships_as_maintainer.inactive.includes(:funder).each do |sponsorship| %>
@@ -95,10 +103,11 @@
         <% end %>
       </div>
     <% end %>
+
   <% end %>
 
   <% if @mutual_accounts.present? %>
-    <h5>Sponsoring Each Other</h5>
+    <h5 class="mt-4">Sponsoring Each Other</h5>
     <div class="row row-cols-3 row-cols-sm-4 row-cols-md-6 g-2 mb-3">
       <% @mutual_accounts.each do |mutual| %>
         <%= render 'account_card', login: mutual.login %>
@@ -107,7 +116,7 @@
   <% end %>
 
   <% if @cluster %>
-    <h5>Sponsorship Cluster</h5>
+    <h5 class="mt-4">Sponsorship Cluster</h5>
     <div class="d-flex flex-wrap gap-2 mb-3">
       <% (@cluster - [@account.login]).each do |login| %>
         <%= render 'account_avatar', login: login, size: 50, shape: 'rounded-circle' %>
@@ -116,20 +125,15 @@
   <% end %>
 
   <% if @account.sponsorships_as_maintainer.any? %>
-    <h5>Sponsor Breakdown</h5>
-    <ul>
-      <% @account.sponsorships_as_maintainer.includes(:funder).group_by{|s| s.funder.kind }.each do |kind, sponsorships| %>
-        <li>
-          <strong><%= kind.try(:humanize) || 'Unknown' %>:</strong> <%= sponsorships.count %> 
-        </li>
-      <% end %>
-    </ul>
+    <p class="text-muted"><small>
+      Sponsored by <%= @account.sponsorships_as_maintainer.includes(:funder).group_by { |s| s.funder.kind }.map { |kind, sponsorships| "#{sponsorships.count} #{kind ? kind.pluralize(sponsorships.count) : 'unknown'}" }.join(', ') %>
+    </small></p>
   <% end %>
 
   <% if @account.sponsorships_as_funder.any? %>
 
-    <% if @account.sponsorships_as_funder.active.includes(:maintainer).length > 0 %>
-      <h5>Active Sponsorships</h5>
+    <% if @account.sponsorships_as_funder.active.any? %>
+      <h5 class="mt-4">Active Sponsorships</h5>
 
       <div class="row row-cols-3 row-cols-sm-4 row-cols-md-6 g-2 mb-3">
         <% @account.sponsorships_as_funder.active.includes(:maintainer).each do |sponsorship| %>
@@ -138,8 +142,8 @@
       </div>
     <% end %>
 
-    <% if @account.sponsorships_as_funder.inactive.includes(:maintainer).length > 0 %>
-      <h5>Past Sponsorships</h5>
+    <% if @account.sponsorships_as_funder.inactive.any? %>
+      <h5 class="mt-4">Past Sponsorships</h5>
 
       <div class="row row-cols-3 row-cols-sm-4 row-cols-md-6 g-2 mb-3">
         <% @account.sponsorships_as_funder.inactive.includes(:maintainer).each do |sponsorship| %>
@@ -147,17 +151,15 @@
         <% end %>
       </div>
     <% end %>
-    
-    <%= link_to 'View All', "https://github.com/#{@account.login}?tab=sponsoring" %>
 
-    <h5>Sponsorship Breakdown by Kind</h5>
-    <ul>
-      <% @account.sponsorships_as_funder.group_by { |s| s.maintainer.kind }.each do |kind, sponsorships| %>
-        <li>
-          <strong><%= kind.try(:humanize) || 'Unknown' %>:</strong> <%= sponsorships.count %>
-        </li>
-      <% end %>
-    </ul>
+    <p class="text-muted"><small>
+      Sponsoring <%= @account.sponsorships_as_funder.includes(:maintainer).group_by { |s| s.maintainer.kind }.map { |kind, sponsorships| "#{sponsorships.count} #{kind ? kind.pluralize(sponsorships.count) : 'unknown'}" }.join(', ') %>
+      &middot;
+      <%= link_to 'View all on GitHub', "https://github.com/#{@account.login}?tab=sponsoring", target: :_blank %>
+    </small></p>
   <% end %>
 
+  <p class="text-muted mt-4"><small>
+    <%= link_to 'View JSON representation', api_v1_account_path(@account), target: :_blank %>
+  </small></p>
 </div>

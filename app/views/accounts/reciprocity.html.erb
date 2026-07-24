@@ -2,30 +2,7 @@
 
 <div class="container-sm">
   <ul class="nav nav-tabs my-3">
-    <li class="nav-item">
-      <a class="nav-link" href="<%= root_path %>">
-        Maintainers
-        <span class="badge bg-secondary rounded-pill">
-          <%= number_with_delimiter Account.has_sponsors_listing.count %>
-        </span>
-      </a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link" href="<%= sponsors_path %>">
-        Sponsors
-        <span class="badge bg-secondary rounded-pill">
-          <%= number_with_delimiter Account.with_sponsorships.count %>
-        </span>
-      </a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link active" href="<%= reciprocity_path %>">
-        Reciprocity
-        <span class="badge bg-secondary rounded-pill">
-          <%= number_with_delimiter @mutual_pairs.size %>
-        </span>
-      </a>
-    </li>
+    <%= render 'tabs', active: 'reciprocity', reciprocity_count: @mutual_pairs.size %>
   </ul>
 
   <div class="row alert alert-info">

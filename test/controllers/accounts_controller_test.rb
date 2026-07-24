@@ -32,6 +32,8 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
     get account_path(@account)
     assert_response :success
     assert_select 'title', /testuser/i
+    assert_select 'ul.nav-tabs a[href=?]', reciprocity_path
+    assert_select 'ul.nav-tabs a.nav-link.active', 0
   end
 
   test "should show account with mixed case login" do
