@@ -31,15 +31,17 @@
       </small></p>
     <% end %>
 
-    <ul class='list-unstyled'>
-      <% ['name', 'location', 'company', 'kind', 'followers', 'following', 'total_stars', 'repositories_count', 'created_at', 'updated_at', 'last_synced_at'].each do |key| %>
-        <% value = @account.data[key] %>
-        <% next if value.blank? %>
-        <li>
-          <strong><%= key.humanize %>:</strong> <%= value %>
-        </li>
-      <% end %>
-    </ul>
+    <%
+      data = @account.data
+      details = [data['name'], data['location'], data['company']].reject(&:blank?)
+      details << "#{number_with_delimiter(data['followers'])} followers" if data['followers'].present?
+      details << "#{number_with_delimiter(data['total_stars'])} stars" if data['total_stars'].present?
+      details << "#{number_with_delimiter(data['repositories_count'])} repositories" if data['repositories_count'].present?
+      details << "joined #{Date.parse(data['created_at']).strftime('%B %Y')}" if data['created_at'].present?
+    %>
+    <% if details.any? %>
+      <p class="text-muted"><small><%= details.join(' · ') %></small></p>
+    <% end %>
   <% end %>
 
   <% if @account.has_sponsors_listing && @account.sponsor_profile.present? %>
@@ -49,20 +51,12 @@
       <%= simple_format @account.sponsor_profile['bio'] %>
     </p>
 
-    <ul class='list-unstyled'>
-      <li>
-        <strong>Current Sponsors:</strong> <%= number_with_delimiter @account.current_sponsors %><%= '+' if @account.active_sponsors_count == 5000 %>
-      </li>
-      <li>
-        <strong>Past Sponsors:</strong> <%= number_with_delimiter @account.past_sponsors %>
-      </li>
-      <li>
-        <strong>Total Sponsors:</strong> <%= number_with_delimiter @account.total_sponsors %>
-      </li>
-      <li>
-        <strong>Minimum Sponsorship:</strong> <%= number_to_currency (@account.minimum_sponsorship_amount || 1) %>
-      </li>
-    </ul>
+    <p class="text-muted"><small>
+      <%= number_with_delimiter @account.current_sponsors %><%= '+' if @account.active_sponsors_count == 5000 %> current sponsors
+      &middot; <%= number_with_delimiter @account.past_sponsors %> past
+      &middot; <%= number_with_delimiter @account.total_sponsors %> total
+      &middot; <%= number_to_currency(@account.minimum_sponsorship_amount || 1) %> minimum
+    </small></p>
 
     <% if @account.sponsor_profile['featured_works'].present? %>
       <h5 class="mt-4">Featured Works</h5>
@@ -160,6 +154,9 @@
   <% end %>
 
   <p class="text-muted mt-4"><small>
+    <% if @account.last_synced_at %>
+      Last synced <%= time_ago_in_words @account.last_synced_at %> ago &middot;
+    <% end %>
     <%= link_to 'View JSON representation', api_v1_account_path(@account), target: :_blank %>
   </small></p>
 </div>
