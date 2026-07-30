@@ -19,6 +19,8 @@ class Account < ApplicationRecord
   has_many :maintained_accounts, through: :sponsorships_as_funder, source: :maintainer
   has_many :funder_accounts, through: :sponsorships_as_maintainer, source: :funder
 
+  scope :visible, -> { where(hidden: false) }
+  scope :hidden, -> { where(hidden: true) }
   scope :has_sponsors_listing, -> { where(has_sponsors_listing: true) }
   scope :has_sponsors_profile, -> { where('length(sponsor_profile::text) > 2') }
   scope :has_active_sponsorships, -> { where('active_sponsorships_count > 0') }
@@ -33,13 +35,13 @@ class Account < ApplicationRecord
   scope :organizations, -> { where("data->>'kind' = ?", 'organization') }
 
   def self.sync_least_recently_synced
-    Account.where(last_synced_at: nil).or(Account.where("last_synced_at < ?", 1.day.ago)).order('last_synced_at asc nulls first').limit(2000).each do |account|
+    visible.where(last_synced_at: nil).or(visible.where("last_synced_at < ?", 1.day.ago)).order('last_synced_at asc nulls first').limit(2000).each do |account|
       account.sync_async
     end
   end
 
   def mutual_accounts
-    Account.where(id: sponsorships_as_funder.active.select(:maintainer_id))
+    Account.visible.where(id: sponsorships_as_funder.active.select(:maintainer_id))
            .where(id: sponsorships_as_maintainer.active.select(:funder_id))
            .order(:login)
   end
@@ -71,7 +73,8 @@ class Account < ApplicationRecord
     logins = JSON.parse(resp.body)
 
     logins.map(&:downcase).each do |login|
-      account = Account.find_by(login: login)
+      account = Account.find_by('lower(login) = ?', login)
+      next if account&.hidden?
 
       if account.nil?
         account = Account.create(login: login, has_sponsors_listing: true)
@@ -91,6 +94,10 @@ class Account < ApplicationRecord
   end
 
   def self.attempt_import_from_repos(login)
+    account = Account.find_by('lower(login) = ?', login.downcase)
+    return if account&.hidden?
+    return account if account
+
     url = "https://repos.ecosyste.ms/api/v1/hosts/GitHub/owners/#{login}"
     resp = Faraday.get(url) do |req|
       req.headers['User-Agent'] = 'sponsors.ecosyste.ms'
@@ -120,6 +127,8 @@ class Account < ApplicationRecord
   end
 
   def sync_all
+    return if hidden?
+
     sync
 
     scrape_sponsored_page
@@ -156,6 +165,8 @@ class Account < ApplicationRecord
   end
 
   def sync_async
+    return if hidden?
+
     AccountWorker.perform_async(id)
   end
 
@@ -264,10 +275,11 @@ class Account < ApplicationRecord
   end
 
   def sync_sponsorships
-    return unless has_sponsors_listing?
+    return if hidden? || !has_sponsors_listing?
     sponsors = fetch_all_sponsors(filter: 'active')
     sponsors.each do |login|
       funder = Account.find_or_create_by(login: login)
+      next if funder.hidden?
       # TODO sync funder
       s = Sponsorship.find_or_create_by(funder: funder, maintainer: self)
       s.update(status: 'active')
@@ -277,6 +289,7 @@ class Account < ApplicationRecord
     past_sponsors = fetch_all_sponsors(filter: 'inactive')
     past_sponsors.each do |login|
       funder = Account.find_or_create_by(login: login)
+      next if funder.hidden?
       # TODO sync funder
       s = Sponsorship.find_or_create_by(funder: funder, maintainer: self)
       s.update(status: 'inactive')
@@ -285,11 +298,14 @@ class Account < ApplicationRecord
   end
 
   def sync_funder
+    return if hidden?
+
     data = fetch_sponsorships_github_graphql
     return unless data.present?
 
     data.each do |sponsor|
       maintainer = Account.find_or_create_by(login: sponsor['maintainer']['login'].downcase)
+      next if maintainer.hidden?
       s = Sponsorship.find_or_create_by(funder: self, maintainer: maintainer)
       s.update(status: 'active')
       maintainer.save
@@ -297,11 +313,14 @@ class Account < ApplicationRecord
   end
 
   def sync_funder_html
+    return if hidden?
+
     data = fetch_sponsorships_github_html
     return unless data.present? && data.is_a?(Array)
 
     data.each do |sponsor|
       maintainer = Account.find_or_create_by(login: sponsor['sponsorableLogin'].downcase)
+      next if maintainer.hidden?
       s = Sponsorship.find_or_create_by(funder: self, maintainer: maintainer)
       s.update(status: sponsor['active'] ? 'active' : 'inactive')
       maintainer.save

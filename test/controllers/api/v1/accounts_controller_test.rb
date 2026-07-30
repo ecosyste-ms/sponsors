@@ -42,6 +42,15 @@ class Api::V1::AccountsControllerTest < ActionDispatch::IntegrationTest
     assert_response :not_found
   end
 
+  test "should not show or import a hidden account" do
+    hidden_account = create(:account, :hidden, login: 'hidden-user')
+
+    get api_v1_account_path(hidden_account)
+
+    assert_response :not_found
+    assert_not_requested :get, hidden_account.repos_api_url
+  end
+
   test "should get sponsors as JSON" do
     get '/api/v1/sponsors'
     assert_response :success
@@ -136,6 +145,16 @@ class Api::V1::AccountsControllerTest < ActionDispatch::IntegrationTest
     json = JSON.parse(response.body)
     assert json.include?(@account.login)
     assert_not json.include?(account_without_listing.login)
+  end
+
+  test "sponsor logins should not include hidden accounts" do
+    hidden_account = create(:account, :hidden, login: 'hidden-user')
+
+    get sponsor_logins_api_v1_accounts_path
+
+    assert_response :success
+    json = JSON.parse(response.body)
+    assert_not json.include?(hidden_account.login)
   end
 
   test "should handle mixed case login in sponsorships endpoint" do
