@@ -10,25 +10,26 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_02_07_164706) do
+ActiveRecord::Schema[8.1].define(version: 2026_07_30_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_stat_statements"
 
   create_table "accounts", force: :cascade do |t|
-    t.string "login", null: false
-    t.datetime "last_synced_at"
-    t.jsonb "data", default: {}
-    t.boolean "has_sponsors_listing", default: false
-    t.integer "sponsors_count", default: 0
-    t.integer "funded_count", default: 0
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.jsonb "sponsor_profile", default: {}
-    t.integer "sponsorships_count", default: 0
-    t.integer "active_sponsorships_count", default: 0
     t.integer "active_sponsors_count", default: 0
+    t.integer "active_sponsorships_count", default: 0
+    t.datetime "created_at", null: false
+    t.jsonb "data", default: {}
+    t.integer "funded_count", default: 0
+    t.boolean "has_sponsors_listing", default: false
+    t.boolean "hidden", default: false, null: false
+    t.datetime "last_synced_at"
+    t.string "login", null: false
     t.integer "minimum_sponsorship_amount"
+    t.jsonb "sponsor_profile", default: {}
+    t.integer "sponsors_count", default: 0
+    t.integer "sponsorships_count", default: 0
+    t.datetime "updated_at", null: false
     t.index ["active_sponsorships_count"], name: "index_accounts_on_active_sponsorships_count"
     t.index ["has_sponsors_listing"], name: "index_accounts_on_has_sponsors_listing"
     t.index ["login"], name: "index_accounts_on_login", unique: true
@@ -37,10 +38,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_07_164706) do
   end
 
   create_table "sponsorships", force: :cascade do |t|
+    t.datetime "created_at", null: false
     t.bigint "funder_id", null: false
     t.bigint "maintainer_id", null: false
     t.string "status"
-    t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["funder_id"], name: "index_sponsorships_on_funder_id"
     t.index ["maintainer_id"], name: "index_sponsorships_on_maintainer_id"

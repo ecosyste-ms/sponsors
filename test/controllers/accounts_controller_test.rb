@@ -47,6 +47,14 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
     assert_response :not_found
   end
 
+  test "should not show a hidden account" do
+    hidden_account = create(:account, :hidden, login: 'hidden-user')
+
+    get account_path(hidden_account)
+
+    assert_response :not_found
+  end
+
   test "should get sponsors page" do
     funder = create(:account, login: 'sponsor')
     create(:sponsorship, funder: funder, maintainer: @account)
@@ -121,6 +129,15 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
     # Should include accounts with sponsors listing
     assert_select 'body', text: /#{@account.login}/
     assert_select 'body', text: /#{@account_with_sponsors.login}/
+  end
+
+  test "index should not show hidden accounts" do
+    hidden_account = create(:account, :hidden, login: 'hidden-user')
+
+    get accounts_path
+
+    assert_response :success
+    assert_select 'body', text: /#{hidden_account.login}/, count: 0
   end
 
   test "should filter maintainers by active status" do

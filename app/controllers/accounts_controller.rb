@@ -3,9 +3,9 @@ class AccountsController < ApplicationController
 
   def index
     if params[:active] == 'true'
-      scope = Account.all.has_sponsors_listing.where('active_sponsors_count > 0')
+      scope = Account.visible.has_sponsors_listing.where('active_sponsors_count > 0')
     else
-      scope = Account.all.has_sponsors_listing
+      scope = Account.visible.has_sponsors_listing
     end
     scope = scope.kind(params[:kind]) if params[:kind].present?
 
@@ -25,7 +25,7 @@ class AccountsController < ApplicationController
 
   def show
 
-    @account = Account.find_by_login(params[:id].downcase)
+    @account = Account.visible.find_by_login(params[:id].downcase)
     raise ActiveRecord::RecordNotFound if @account.nil?
 
     if @account.active_sponsorships_count > 0 && @account.active_sponsors_count > 0
@@ -36,9 +36,9 @@ class AccountsController < ApplicationController
 
   def sponsors
     if params[:active] == 'true'
-      scope = Account.all.where('active_sponsorships_count > 0')
+      scope = Account.visible.where('active_sponsorships_count > 0')
     else
-      scope = Account.all.where('sponsorships_count > 0')
+      scope = Account.visible.where('sponsorships_count > 0')
     end
     scope = scope.kind(params[:kind]) if params[:kind].present?
 
@@ -66,7 +66,7 @@ class AccountsController < ApplicationController
   end
 
   def charts
-    @accounts_by_total_sponsorships = Account.all
+    @accounts_by_total_sponsorships = Account.visible
       .has_sponsors_listing
       .order(sponsors_count: :desc)
       .limit(1000)
@@ -74,7 +74,7 @@ class AccountsController < ApplicationController
     
     @top_50_accounts_by_total_sponsorships = @accounts_by_total_sponsorships.first(50)
 
-    @top_1000_users_by_total_sponsorships = Account.users
+    @top_1000_users_by_total_sponsorships = Account.visible.users
       .has_sponsors_listing
       .order(sponsors_count: :desc)
       .limit(1000)
@@ -82,7 +82,7 @@ class AccountsController < ApplicationController
     
     @top_50_users_by_total_sponsorships = @top_1000_users_by_total_sponsorships.first(50)
 
-    @top_1000_organizations_by_total_sponsorships = Account.organizations
+    @top_1000_organizations_by_total_sponsorships = Account.visible.organizations
       .has_sponsors_listing
       .order(sponsors_count: :desc)
       .limit(1000)
@@ -99,21 +99,21 @@ class AccountsController < ApplicationController
   end
 
   def sponsor_charts
-    @accounts_by_total_sponsors = Account.all
+    @accounts_by_total_sponsors = Account.visible
       .where('sponsorships_count > 0').order('sponsorships_count desc')
       .limit(1000)
       .pluck(:login, :sponsorships_count)
 
     @top_50_accounts_by_total_sponsors = @accounts_by_total_sponsors.first(50)
     
-    @top_1000_users_by_total_sponsors = Account.users
+    @top_1000_users_by_total_sponsors = Account.visible.users
       .where('sponsorships_count > 0').order('sponsorships_count desc')
       .limit(1000)
       .pluck(:login, :sponsorships_count)
     
     @top_50_users_by_total_sponsors = @top_1000_users_by_total_sponsors.first(50)
 
-    @top_1000_organizations_by_total_sponsors = Account.organizations
+    @top_1000_organizations_by_total_sponsors = Account.visible.organizations
       .where('sponsorships_count > 0').order('sponsorships_count desc')
       .limit(1000)
       .pluck(:login, :sponsorships_count)

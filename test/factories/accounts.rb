@@ -38,6 +38,10 @@ FactoryBot.define do
     trait :without_sponsors_listing do
       has_sponsors_listing { false }
     end
+
+    trait :hidden do
+      hidden { true }
+    end
     
     trait :with_many_sponsors do
       sponsors_count { 100 }
