@@ -31,4 +31,23 @@ class CacheHeadersTest < ActionDispatch::IntegrationTest
     assert_match(/s-maxage=3600/, cache_control)
     assert_match(/max-age=300/, cache_control)
   end
+
+  test "html pages do not set cookies" do
+    get root_url
+    assert_response :success
+    assert_nil response.headers['Set-Cookie']
+  end
+
+  test "account show does not set cookies" do
+    account = create(:account, login: 'cookietest')
+    get account_url(account)
+    assert_response :success
+    assert_nil response.headers['Set-Cookie']
+  end
+
+  test "api endpoints do not set cookies" do
+    get api_v1_accounts_url, as: :json
+    assert_response :success
+    assert_nil response.headers['Set-Cookie']
+  end
 end
