@@ -262,7 +262,7 @@ GEM
       concurrent-ruby (~> 1.0, >= 1.0.5)
       sidekiq (>= 7.0.0, < 9.0.0)
       thor (>= 1.0, < 3.0)
-    sprockets (4.4.0)
+    sprockets (4.4.1)
       concurrent-ruby (~> 1.1)
       logger
       rack (>= 2.2.4, < 4)
@@ -473,7 +473,7 @@ CHECKSUMS
   sidekiq (8.1.7) sha256=91ad48c7e6c32e1846bf1d5b74c27948758049b93fed0cb539f8d586c7de3415
   sidekiq-status (4.0.0) sha256=3f45627efaa54c7f3e3b62dda358425af07fd7c596d6ab50d56ef3e45cbcdb67
   sidekiq-unique-jobs (8.1.0) sha256=6a7eaa61ac408197a542350df905687b506acae2f485da03b11d28b1c367dc35
-  sprockets (4.4.0) sha256=84d5819b31e65bf3e61d71241465e65b341947322f6bd57400648bb11e6bb024
+  sprockets (4.4.1) sha256=fbd665edad0916de5c7abefef0fc616866a60c5e48ce2846f39ac3fc5df9e184
   sprockets-rails (3.5.2) sha256=a9e88e6ce9f8c912d349aa5401509165ec42326baf9e942a85de4b76dbc4119e
   thor (1.5.0) sha256=e3a9e55fe857e44859ce104a84675ab6e8cd59c650a49106a05f55f136425e73
   tilt (2.9.0) sha256=da5735d0280bba96e9a91041bb14aee435ccad5c17b0fa519249ae543d9aa3a5
